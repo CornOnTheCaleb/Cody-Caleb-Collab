@@ -13,6 +13,27 @@ char * const rCEILING_CORNER = "╗";
 char * const lFLOOR_CORNER = "╚";
 char * const rFLOOR_CORNER = "╝";
 
+class Character
+{
+  char* const m_HERO = "\e[0;36m&\e[0m";
+  char* m_past;
+  unsigned int x_coord, y_coord;
+
+  Character() {x_coord = 2; y_coord = 48;}
+  
+  void print()
+  {
+    cout << "\e[" << y_coord << ";" << x_coord << m_HERO << "H";
+  }
+
+  void strafe(const char input)
+  {
+    if(input == 'a')
+      --x_coord;
+    else if(input == 'd')
+      --y_coord;
+  }
+}
 void print(char** grid[], stringstream & output)
 {
   system("clear");
