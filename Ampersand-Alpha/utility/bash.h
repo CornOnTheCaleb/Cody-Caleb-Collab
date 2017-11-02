@@ -31,27 +31,27 @@ namespace term
   
   const string RESET = "\e[0m";
 
-  string move_up (const int lines)
+  string cursor_move_up (const int lines)
   {
     return ("\e[" + to_string(lines) + "A");
   }
 
-  string move_down (const int lines)
+  string cursor_move_down (const int lines)
   {
     return ("\e[" + to_string(lines) + "B");
   }
 
-  string move_right (const int columns)
+  string cursor_move_right (const int columns)
   {
     return ("\e[" + to_string(columns) + "C");
   }
 
-  string move_left (const int columns)
+  string cursor_move_left (const int columns)
   {
     return ("\e[" + to_string(columns) + "D");
   }
 
-  string move_to (const int line, const int column)
+  string cursor_move_to (const int line, const int column)
   {
     return ("\e[" + to_string(line) + ";" + to_string(column) + "H");
   }
