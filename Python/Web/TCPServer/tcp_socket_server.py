@@ -71,16 +71,18 @@ while not serverShouldTerminate:
       # Gets filename from HTTP header and removes the slash
       filename = messageReceived.split()[1][1:]
 
+      print(" > Requested file: " + filename)
+      
       # If no file was specified, send index.html
       if len(filename) == 0:
         filename = "index.html"
 
       # Remove all ".." from filename so only files in current directory can be reached
-      filename = filename.replace("../", "").replace("..", "")
+      filename = "./src/" + filename.replace("../", "").replace("..", "")
 
       # Set content type depending on requested file
       contentType = ""
-      if ".html" in filename:
+      if ".html" in filename or ".php" in filename:
         contentType = "text/html"
       elif ".css" in filename:
         contentType = "text/css"
@@ -91,19 +93,22 @@ while not serverShouldTerminate:
       else:
         contentType = "text/plain"
 
-      # Open and read the file's contents (will fail if doesn't exist)
-      print("   - Requested file: " + filename)
+      # Run PHP if you want to
       fileContents = ""
-      if "image" in contentType:
-        fileToRead = open("./src/" + filename, "rb")
-        fileContents = fileToRead.read()
-        fileToRead.close()
+      if ".php" in filename:
+        fileContents = subprocess.check_output(["php", "-f", filename])
       else:
-        fileToRead = open("./src/" + filename, "r")
-        fileContents = fileToRead.read() + "\r\n"
-        fileContents = fileContents.encode()
-        fileToRead.close()
-      
+        # Open and read the file's contents (will fail if doesn't exist)
+        if "image" in contentType:
+          fileToRead = open(filename, "rb")
+          fileContents = fileToRead.read()
+          fileToRead.close()
+        else:
+          fileToRead = open(filename, "r")
+          fileContents = fileToRead.read() + "\r\n"
+          fileContents = fileContents.encode()
+          fileToRead.close()
+
       # Send HTTP response header
       responseHeader = "HTTP/1.1 200 OK\r\nServer: Simple TCP Server\r\nConnection: close\r\nContent-Type: " + contentType + "\r\n\r\n"
       

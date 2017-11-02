@@ -39,7 +39,7 @@ int main (int argc, char ** argv)
   ConvolutionKernel gaussianBlur({{1, 2, 1}, {2, 4, 2}, {1, 2, 1}});
   ConvolutionKernel meanBlur({{1, 1, 1}, {1, 1, 1}, {1, 1, 1}});
   // apply_operation_rgb(image, grayscale);
-  apply_operation_rgb(image, isolate_green);
+  // apply_operation_rgb(image, isolate_green);
   image.save_to_file("output.png");
 
   for (unsigned int row = 1; row < image.get_height() - 1; ++row)
