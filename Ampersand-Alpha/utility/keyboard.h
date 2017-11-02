@@ -10,6 +10,25 @@
 
 using namespace std;
 
+/*
+  EXAMPLE USAGE:
+
+  nonblock(true);
+  while (true)
+  {
+    char c;
+    if (c = getch())
+    {
+      dostuff(c);
+      if (c == 27) // ESC
+      {
+        break;
+      }
+    }
+  }
+  nonblock(false);
+*/
+
 int khbit ()
 {
   timeval tv;
