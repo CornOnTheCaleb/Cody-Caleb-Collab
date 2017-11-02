@@ -1,19 +1,22 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include "utility/bash.h"
 #include <iostream>
 #include <string>
 #include <fstream>
-
+#include <sstream>
 class World
 {
 // CONSTANT VARIABLES:
-  static const char * const BLOCK = "▓";
-  static const char * const WALL = "║";
-  static const char * const CEILING = "═";
-  static const char * const CEILING_CORNER = "╔═";
-  static const char * const FLOOR_CORNER = "╚";
-  const unsigned int TERMIANL_LENGTH = 55, TERMINAL_WIDTH = 211;
+  static char * const BLOCK = "▓";
+  static char * const WALL = "║";
+  static char * const CEILING = "═";
+  static char * const lCEILING_CORNER = "╔";
+  static char * const rCEILING_CORNER = "╗";
+  static char * const lFLOOR_CORNER = "╚";
+  static char * const rFLOOR_CORNER = "╝";
+  const unsigned int TERMIANL_LENGTH = 54, TERMINAL_WIDTH = 211;
   const unsigned int WORLD_LENGTH = 55, WORLD_WIDTH = 1000;
 
 // MEMBER VARIABLES:
