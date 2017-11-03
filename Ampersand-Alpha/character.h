@@ -37,9 +37,16 @@ public:
   }
 
 // UPDATE
-  void update(World map)
+  void update(World map, Timemanager time)
   {
-    if(map[y
+    // Y VELOCITY
+    if(map[y + 1][x] == " " && y_velocity != 0)
+      y_velocity += GRAVITY * time.get_delta_time();
+    else
+      y_velocity = 0;
+    // Y POSITION
+    y_coord += y_velocity * time.get_delta_time();
+      
 
 // MOVE
   void move(const char input, World map)

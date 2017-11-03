@@ -6,6 +6,13 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+
+// GLOBAL VARIABLES
+  const unsigned int TERMINAL_LENGTH = 54, TERMINAL_WIDTH = 211;
+  const unsigned int WORLD_LENGTH = 55, WORLD_WIDTH = 1000;
+  const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
+  const int GRAVITY = -9.8;
+
 class World
 {
 // CONSTANT VARIABLES:
@@ -16,11 +23,6 @@ class World
   static char * const rCEILING_CORNER = "╗";
   static char * const lFLOOR_CORNER = "╚";
   static char * const rFLOOR_CORNER = "╝";
-
-  const unsigned int TERMINAL_LENGTH = 54, TERMINAL_WIDTH = 211;
-  const unsigned int WORLD_LENGTH = 55, WORLD_WIDTH = 1000;
-  const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
-  const int GRAVITY = -9.8;
 
 // MEMBER VARIABLES:
   char *** g_map;
