@@ -1,7 +1,6 @@
 #ifndef TIME_MANAGER_H
 #define TIME_MANAGER_H
 
-#include <ratio>
 #include <chrono>
 
 using namespace std::chrono;
