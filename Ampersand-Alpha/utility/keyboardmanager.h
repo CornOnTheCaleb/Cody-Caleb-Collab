@@ -29,7 +29,7 @@ class KeyboardManager
       tcgetattr(STDIN_FILENO, &ttystate);
       if (state == false)
       {
-        ttystate.c_lflag &= (~ICANON & ~ECHO); // Not display character
+        ttystate.c_lflag &= (~ICANON & ~ECHO);
         ttystate.c_cc[VMIN] = 1;
       }
       else if (state == true)
@@ -70,6 +70,7 @@ class KeyboardManager
             ++ptr;
           }
           m_keyboardState[event.code] = event.value;
+          cout << event.code << " " << event.value << endl;
         }
         m_deviceStream.close();
       }
