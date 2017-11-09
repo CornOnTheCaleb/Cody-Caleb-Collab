@@ -70,7 +70,6 @@ class KeyboardManager
             ++ptr;
           }
           m_keyboardState[event.code] = event.value;
-          cout << event.code << " " << event.value << endl;
         }
         m_deviceStream.close();
       }
