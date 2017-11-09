@@ -1,11 +1,20 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
+/*
+===========================================================
+--------------------DEFAULT CONSTRUCTOR--------------------
+=========================================================== */
 World::World()
 {
-  map = new char***[TERMINAL_LENGTH + 1];
+  WORLD_LENGTH = TERMINAL_LENGTH;
+  WORLD_WIDTH = TERMINAL_WIDTH;
+
+  // creates 2D array for map
+  map = new char**[TERMINAL_LENGTH + 1];
   for(int i = 0; i <= TERMINAL_LENGTH; i++)
-    map[i] = new char**[TERMINAL_WIDTH + 1];
+    map[i] = new char*[TERMINAL_WIDTH + 1];
+  // creates green grass block  
   string grass = BLOCK;
   grass.insert(0, term::GREEN);
 
@@ -33,25 +42,109 @@ World::World()
   }
 }
 
+/*
+=================================================================
+--------------------PARAMETERIZED CONSTRUCTOR--------------------
+================================================================= */
 World::World(string map_file)
 {
   unsigned int length, width;
   char* tmp;
   ifstream fin;
 
-  fin.open(map_file.c_str());
-  fin >> length >> width;
-  map = new char***[length + 1];
-  for(int i = 0; i <= length; i++)
-    map[i] = new char**[width + 1];
+  fin.open(const map_file.c_str());
 
-  for(int x = 1; x <= width; x++)
+  fin >> length >> width;
+  WORLD_LENGTH = length;
+  WORLD_WIDTH = width;
+
+  map = new char**[length + 1];
+  for(int i = 0; i <= length; i++)
+    map[i] = new char*[width + 1];
+
+  for(int y = 1; y <= length; y++)
   {
-    for(int y = 1; y <= length; y++)
+    for(int x = 1; x <= width; x++)
     {
       fin >> tmp;
       map[y][x] = tmp;
     }
   }
 }
+
+/*
+========================================================
+--------------------COPY CONSTRUCTOR--------------------
+======================================================== */
+World::World(const World & rhs)
+{
+  map = new char**[rhs.WORLD_LENGTH];
+  for(int i = 0; i <= rhs.WORLD_LENGTH; i++)
+    map[i] = new char*[rhs.WORLD_WIDTH];
+  WORLD_LENGTH = rhs.WORLD_LENGTH;
+  WORLD_WIDTH = rhs.WORLD_WIDTH;
+  for(int y = 0; y <= WORLD_LENGTH; y++)
+  {
+    for(int x = 0; x <= WORLD_WIDTH; x++)
+    {
+      map[y][x] = rhs.map[y][x];
+    }
+  }
+}
+
+/*
+==================================================
+--------------------DESTRUCTOR--------------------
+================================================== */
+World::~World()
+{
+  clear();
+}
+
+/*
+==============================================
+--------------------INSERT--------------------
+============================================== */
+void World::insert(const unsigned int x_coord, const unsigned int y_coord, const char * character)
+{
+  map[y_coord][x_coord] = character;
+}
+
+/*
+==============================================
+--------------------REMOVE--------------------
+============================================== */
+void World::remove(const unsigned int x_coord, const unsigned int y_coord, const char * character = " ")
+{
+  map[y_coord][x_coord] = character;
+}
+
+/*
+=============================================
+--------------------PRINT--------------------
+============================================= */
+void World::print()
+{
+  for(int y = 1; y <= WORLD_LENGTH; y++)
+  {
+    for(int x = 1; x <= WORLD_WIDTH; x++)
+    {
+      cout << map[y][x];
+      if(x == WORLD_WIDTH)
+        cout << endl;
+    }
+  }
+}
+
+/*
+=============================================
+--------------------CLEAR--------------------
+============================================= */
+void World::clear()
+{
+  for(int y = WORLD_LENGTH; y >= 0; y--)
+    delete[] map[y];
+  delete[] map;
+}
+
 #endif
