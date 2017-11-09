@@ -10,7 +10,6 @@
 
 // GLOBAL VARIABLES
   const unsigned int TERMINAL_LENGTH = 55, TERMINAL_WIDTH = 211;
-  const unsigned int WORLD_LENGTH = 55, WORLD_WIDTH = 1000;
   const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
   const double GRAVITY = -9.8;
 
@@ -25,10 +24,10 @@ class World
   static char * const lFLOOR_CORNER = "╚";
   static char * const rFLOOR_CORNER = "╝";
 
-// MEMBER VARIABLES:
-  char**** map;
-
 public:
+// MEMBER VARIABLES:
+  char*** map;
+  unsigned int WORLD_LENGTH, WORLD_WIDTH;
   
   World(); // Default Constructor
 
@@ -38,9 +37,9 @@ public:
 
   ~World(); // Destructor
 
-  void insert(const unsigned int x, const unsigned int y, const char * character);
+  void insert(const unsigned int x_coord, const unsigned int y_coord, const char * character);
 
-  void remove(const unsigned int x, const unsigned int y, const char * character = " ");
+  void remove(const unsigned int x_coord, const unsigned int y_coord, const char * character = " ");
 
   void print();
 
