@@ -2,13 +2,14 @@
 #define MAP_H
 
 #include "utility/bash.h"
+#include "utility/timemanager.h"
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
 
 // GLOBAL VARIABLES
-  const unsigned int TERMINAL_LENGTH = 54, TERMINAL_WIDTH = 211;
+  const unsigned int TERMINAL_LENGTH = 55, TERMINAL_WIDTH = 211;
   const unsigned int WORLD_LENGTH = 55, WORLD_WIDTH = 1000;
   const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
   const int GRAVITY = -9.8;
@@ -25,7 +26,7 @@ class World
   static char * const rFLOOR_CORNER = "╝";
 
 // MEMBER VARIABLES:
-  char *** g_map;
+  char**** map;
 
 public:
   
@@ -47,4 +48,5 @@ public:
 
 };
 
+#include "map.hpp"
 #endif MAP_H
