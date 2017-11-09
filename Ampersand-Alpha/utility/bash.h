@@ -56,6 +56,16 @@ namespace term
     return ("\e[" + to_string(line) + ";" + to_string(column) + "H");
   }
 
+  string cursor_hide ()
+  {
+    return ("\e[?25l");
+  }
+
+  string cursor_show ()
+  {
+    return ("\e[?25h");
+  }
+
   bool supports_true_color ()
   {
     return (string(getenv("COLORTERM")) == "truecolor");
