@@ -12,7 +12,7 @@
   const unsigned int TERMINAL_LENGTH = 55, TERMINAL_WIDTH = 211;
   const unsigned int WORLD_LENGTH = 55, WORLD_WIDTH = 1000;
   const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
-  const int GRAVITY = -9.8;
+  const double GRAVITY = -9.8;
 
 class World
 {
@@ -32,7 +32,7 @@ public:
   
   World(); // Default Constructor
 
-  World(string map_file); // Parameterized Constructor
+  World(const string map_file); // Parameterized Constructor
 
   World(const World & rhs); // Copy Constructor
 
