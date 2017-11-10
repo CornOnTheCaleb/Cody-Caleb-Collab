@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <cstdio>
+#include <sys/ioctl.h>
 
 using namespace std;
 
