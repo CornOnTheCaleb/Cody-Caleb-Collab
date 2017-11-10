@@ -1,9 +1,6 @@
-#include <iostream>
-using namespace std;
+#include "character.h"
 
 int main()
 {
-  char * fuck = "▓";
-  cout << fuck << endl;
   return 0;
 }
