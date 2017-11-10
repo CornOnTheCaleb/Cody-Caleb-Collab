@@ -16,7 +16,6 @@ World::World()
     map[i] = new char*[TERMINAL_WIDTH + 1];
   // creates green grass block  
   string grass = BLOCK;
-  grass.insert(0, term::GREEN);
 
   for(int x = 1; x <= TERMINAL_WIDTH; x++)
   {
