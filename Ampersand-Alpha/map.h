@@ -1,7 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "utility/bash.h"
+#include "utility/terminalmanager.h"
 #include "utility/timemanager.h"
 #include <iostream>
 #include <string>
@@ -9,21 +9,22 @@
 #include <sstream>
 
 // GLOBAL VARIABLES
+  // INTEGERS:
   const unsigned int TERMINAL_LENGTH = 55, TERMINAL_WIDTH = 211;
   const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
   const double GRAVITY = -9.8;
+  // STRINGS:
+  char const * BLOCK = "▓";
+  char const * WALL = "║";
+  char const * CEILING = "═";
+  char const * lCEILING_CORNER = "╔";
+  char const * rCEILING_CORNER = "╗";
+  char const * lFLOOR_CORNER = "╚";
+  char const * rFLOOR_CORNER = "╝";
+
 
 class World
 {
-// CONSTANT VARIABLES:
-  static char * const BLOCK = "▓";
-  static char * const WALL = "║";
-  static char * const CEILING = "═";
-  static char * const lCEILING_CORNER = "╔";
-  static char * const rCEILING_CORNER = "╗";
-  static char * const lFLOOR_CORNER = "╚";
-  static char * const rFLOOR_CORNER = "╝";
-
 public:
 // MEMBER VARIABLES:
   char*** map;
@@ -48,4 +49,4 @@ public:
 };
 
 #include "map.hpp"
-#endif MAP_H
+#endif

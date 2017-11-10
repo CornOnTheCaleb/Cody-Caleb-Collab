@@ -1,6 +1,6 @@
 #include "keyboardmanager.h"
 #include "timemanager.h"
-#include "bash.h"
+#include "terminalmanager.h"
 #include "vector.h"
 #include <iostream>
 
@@ -19,7 +19,10 @@ int main ()
   double speed = 10.0;
 
   cout << "HERE WE GO..." << endl;
-  sleep(1);
+  int lines, columns;
+  term::get_dimensions(columns, lines);
+  cout << lines << " " << columns << endl;
+  sleep(5);
   cout << term::CLEAR << term::cursor_hide() << term::cursor_move_to(0, 0) << "&" << flush;
 
   while (true)

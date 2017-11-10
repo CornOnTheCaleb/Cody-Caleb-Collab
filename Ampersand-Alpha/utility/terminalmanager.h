@@ -1,5 +1,5 @@
-#ifndef BASH_H
-#define BASH_H
+#ifndef TERMINAL_MANAGER_H
+#define TERMINAL_MANAGER_H
 
 #include <iostream>
 #include <string>
@@ -74,6 +74,15 @@ namespace term
   string color (const unsigned char red, const unsigned char green, const unsigned char blue)
   {
     return ("\e[38;2;" + to_string(red) + ";" + to_string(green) + ";" + to_string(blue) + "m");
+  }
+
+  void get_dimensions (int & columns, int & lines)
+  {
+    winsize size;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+    columns = size.ws_col;
+    lines = size.ws_row;
+    return;
   }
 };
 
