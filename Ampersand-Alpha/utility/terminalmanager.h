@@ -3,8 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include <cstdlib>
-#include <stdio.h>
+#include <unistd.h>
 #include <sys/ioctl.h>
 
 using namespace std;
