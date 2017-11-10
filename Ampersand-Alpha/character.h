@@ -10,10 +10,10 @@
 class Character
 {
 // VARIABLES:
-  char* symbol;
+  string symbol;
   bool life;
   unsigned int x_coord, y_coord;
-  unsigned int x_cood_prev, y_coord_prev;
+  unsigned int x_coord_prev, y_coord_prev;
   int y_velocity, x_velocity, acceleration;
   int x_terminal_velocity;
 
@@ -66,12 +66,12 @@ public:
 // STRAFE
   void strafe(const char input, World map)
   {
-    if(input == 'a' && map[y_coord][x_coord - 1] == " ")
+    if(input == 'a' && map.map[y_coord][x_coord - 1] == " ")
     {
       x_coord_prev = x_coord;
       --x_coord;
     }
-    else if(input == 'd' && map[y_coord][x_coord + 1] == " ")
+    else if(input == 'd' && map.map[y_coord][x_coord + 1] == " ")
     {
       x_coord_prev = x_coord;
       ++x_coord;
@@ -81,7 +81,7 @@ public:
 // JUMP
   void jump(World map)
   {
-    if(y_coord == 54 && map[y_coord + 1][x] == " ")
+    if(y_coord == 54 && map.map[y_coord + 1][x_coord] == " ")
       y_velocity += 5;    
   }
 };

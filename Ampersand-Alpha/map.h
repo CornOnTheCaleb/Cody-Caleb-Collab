@@ -14,13 +14,13 @@
   const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
   const double GRAVITY = -9.8;
   // STRINGS:
-  char const * BLOCK = "▓";
-  char const * WALL = "║";
-  char const * CEILING = "═";
-  char const * lCEILING_CORNER = "╔";
-  char const * rCEILING_CORNER = "╗";
-  char const * lFLOOR_CORNER = "╚";
-  char const * rFLOOR_CORNER = "╝";
+  const string BLOCK = "▓";
+  const string WALL = "║";
+  const string CEILING = "═";
+  const string lCEILING_CORNER = "╔";
+  const string rCEILING_CORNER = "╗";
+  const string lFLOOR_CORNER = "╚";
+  const string rFLOOR_CORNER = "╝";
 
 
 class World
@@ -38,9 +38,9 @@ public:
 
   ~World(); // Destructor
 
-  void insert(const unsigned int x_coord, const unsigned int y_coord, char const * character);
+  void insert(const unsigned int x_coord, const unsigned int y_coord, const string character);
 
-  void remove(const unsigned int x_coord, const unsigned int y_coord, char const * character = " ");
+  void remove(const unsigned int x_coord, const unsigned int y_coord, const string character = " ");
 
   void print();
 

@@ -11,30 +11,30 @@ World::World()
   WORLD_WIDTH = TERMINAL_WIDTH;
 
   // creates 2D array for map
-  map = new char**[TERMINAL_LENGTH + 1];
+  map = new string*[TERMINAL_LENGTH + 1];
   for(int i = 0; i <= TERMINAL_LENGTH; i++)
-    map[i] = new char*[TERMINAL_WIDTH + 1];
+    map[i] = new string[TERMINAL_WIDTH + 1];
   // creates green grass block  
-  string grass = BLOCK;
+  string grass = term::GREEN + BLOCK + term::RESET;
 
   for(int x = 1; x <= TERMINAL_WIDTH; x++)
   {
     for(int y = 1; y <= TERMINAL_LENGTH; y++)
     {
       if(x == 1 && y == 1)
-        map[y][x] = const_cast<char*>(lCEILING_CORNER);
+        map[y][x] = lCEILING_CORNER;
       else if(x == 1 && y == TERMINAL_LENGTH)
-        map[y][x] = const_cast<char*>(grass.c_str());
+        map[y][x] = grass;
       else if(x == TERMINAL_WIDTH && y == 1)
-        map[y][x] = const_cast<char*>(rCEILING_CORNER);
+        map[y][x] = rCEILING_CORNER;
       else if(x == TERMINAL_WIDTH && y == TERMINAL_LENGTH)
-        map[y][x] = const_cast<char*>(grass.c_str());
+        map[y][x] = grass;
       else if(x == 1 || x == TERMINAL_WIDTH)
-        map[y][x] = const_cast<char*>(WALL);
+        map[y][x] = WALL;
       else if(y == 1)
-        map[y][x] = const_cast<char*>(CEILING);
+        map[y][x] = CEILING;
       else if(y == TERMINAL_LENGTH)
-        map[y][x] = const_cast<char*>(grass.c_str());
+        map[y][x] = grass;
       else
         map[y][x] = " ";
     }
@@ -48,7 +48,7 @@ World::World()
 World::World(string map_file)
 {
   unsigned int length, width;
-  char* tmp;
+  string tmp;
   ifstream fin;
 
   fin.open(map_file.c_str());
@@ -57,9 +57,9 @@ World::World(string map_file)
   WORLD_LENGTH = length;
   WORLD_WIDTH = width;
 
-  map = new char**[length + 1];
+  map = new string*[length + 1];
   for(int i = 0; i <= length; i++)
-    map[i] = new char*[width + 1];
+    map[i] = new string[width + 1];
 
   for(int y = 1; y <= length; y++)
   {
@@ -77,9 +77,9 @@ World::World(string map_file)
 ======================================================== */
 World::World(const World & rhs)
 {
-  map = new char**[rhs.WORLD_LENGTH];
+  map = new string*[rhs.WORLD_LENGTH];
   for(int i = 0; i <= rhs.WORLD_LENGTH; i++)
-    map[i] = new char*[rhs.WORLD_WIDTH];
+    map[i] = new string[rhs.WORLD_WIDTH];
   WORLD_LENGTH = rhs.WORLD_LENGTH;
   WORLD_WIDTH = rhs.WORLD_WIDTH;
   for(int y = 0; y <= WORLD_LENGTH; y++)
@@ -104,18 +104,18 @@ World::~World()
 ==============================================
 --------------------INSERT--------------------
 ============================================== */
-void World::insert(const unsigned int x_coord, const unsigned int y_coord, char const * character)
+void World::insert(const unsigned int x_coord, const unsigned int y_coord, const string character)
 {
-  map[y_coord][x_coord] = const_cast<char*>(character);
+  map[y_coord][x_coord] = character;
 }
 
 /*
 ==============================================
 --------------------REMOVE--------------------
 ============================================== */
-void World::remove(const unsigned int x_coord, const unsigned int y_coord, char const * character)
+void World::remove(const unsigned int x_coord, const unsigned int y_coord, const string character)
 {
-  map[y_coord][x_coord] = const_cast<char*>(character);
+  map[y_coord][x_coord] = character;
 }
 
 /*
