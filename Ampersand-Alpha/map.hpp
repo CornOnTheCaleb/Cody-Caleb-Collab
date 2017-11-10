@@ -23,19 +23,19 @@ World::World()
     for(int y = 1; y <= TERMINAL_LENGTH; y++)
     {
       if(x == 1 && y == 1)
-        map[y][x] = lCEILING_CORNER;
+        map[y][x] = const_cast<char*>(lCEILING_CORNER);
       else if(x == 1 && y == TERMINAL_LENGTH)
-        map[y][x] = grass;
+        map[y][x] = const_cast<char*>(grass.c_str());
       else if(x == TERMINAL_WIDTH && y == 1)
-        map[y][x] = rCEILING_CORNER;
+        map[y][x] = const_cast<char*>(rCEILING_CORNER);
       else if(x == TERMINAL_WIDTH && y == TERMINAL_LENGTH)
-        map[y][x] = grass;
+        map[y][x] = const_cast<char*>(grass.c_str());
       else if(x == 1 || x == TERMINAL_WIDTH)
-        map[y][x] = WALL;
+        map[y][x] = const_cast<char*>(WALL);
       else if(y == 1)
-        map[y][x] = CIELING;
+        map[y][x] = const_cast<char*>(CEILING);
       else if(y == TERMINAL_LENGTH)
-        map[y][x] = grass;
+        map[y][x] = const_cast<char*>(grass.c_str());
       else
         map[y][x] = " ";
     }
@@ -52,7 +52,7 @@ World::World(string map_file)
   char* tmp;
   ifstream fin;
 
-  fin.open(const map_file.c_str());
+  fin.open(map_file.c_str());
 
   fin >> length >> width;
   WORLD_LENGTH = length;
@@ -105,18 +105,18 @@ World::~World()
 ==============================================
 --------------------INSERT--------------------
 ============================================== */
-void World::insert(const unsigned int x_coord, const unsigned int y_coord, const char * character)
+void World::insert(const unsigned int x_coord, const unsigned int y_coord, char const * character)
 {
-  map[y_coord][x_coord] = character;
+  map[y_coord][x_coord] = const_cast<char*>(character);
 }
 
 /*
 ==============================================
 --------------------REMOVE--------------------
 ============================================== */
-void World::remove(const unsigned int x_coord, const unsigned int y_coord, const char * character = " ")
+void World::remove(const unsigned int x_coord, const unsigned int y_coord, char const * character)
 {
-  map[y_coord][x_coord] = character;
+  map[y_coord][x_coord] = const_cast<char*>(character);
 }
 
 /*

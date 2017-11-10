@@ -38,9 +38,9 @@ public:
 
   ~World(); // Destructor
 
-  void insert(const unsigned int x_coord, const unsigned int y_coord, const char * character);
+  void insert(const unsigned int x_coord, const unsigned int y_coord, char const * character);
 
-  void remove(const unsigned int x_coord, const unsigned int y_coord, const char * character = " ");
+  void remove(const unsigned int x_coord, const unsigned int y_coord, char const * character = " ");
 
   void print();
 
