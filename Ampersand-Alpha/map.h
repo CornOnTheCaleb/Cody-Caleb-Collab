@@ -27,7 +27,7 @@ class World
 {
 public:
 // MEMBER VARIABLES:
-  char*** map;
+  string** map;
   unsigned int WORLD_LENGTH, WORLD_WIDTH;
   
   World(); // Default Constructor

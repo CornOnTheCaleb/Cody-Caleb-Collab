@@ -24,8 +24,8 @@ public:
     {symbol = term::CYAN + "&" + term::RESET; x_coord = 0; y_coord = 0;}
 
 // PARAMETERIZED CONSTRUCTOR
-  Character(char* const symbol, const unsigned int x, const unsigned int y)
-    {symbol = symbol; x_coord = x; y_coord = y;}
+  Character(char* const character, const unsigned int x, const unsigned int y)
+    {symbol = character; x_coord = x; y_coord = y;}
 
 // DESTRUCTOR
   ~Character()
@@ -36,10 +36,10 @@ public:
   }
 
 // UPDATE
-  void update_character(World map, Timemanager time)
+  void update_character(World map, TimeManager time)
   {
     // Y VELOCITY
-    if(map.map[y + 1][x] == " " && y_velocity != 0)
+    if(map.map[y_coord + 1][x_coord] == " " && y_velocity != 0)
       y_velocity += GRAVITY * time.get_delta_time();
     else
     {
@@ -84,6 +84,6 @@ public:
     if(y_coord == 54 && map[y_coord + 1][x] == " ")
       y_velocity += 5;    
   }
-}
+};
     
 #endif
