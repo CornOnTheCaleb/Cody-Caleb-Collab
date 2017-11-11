@@ -21,7 +21,7 @@ public:
 
 // DEFAULT CONSTRUCTOR
   Character()
-    {symbol = term::CYAN + "&" + term::RESET; x_coord = 0; y_coord = 0;}
+    {symbol = "\e[1;37;46m" + "&" + term::RESET; x_coord = 0; y_coord = 0;}
 
 // PARAMETERIZED CONSTRUCTOR
   Character(char* const character, const unsigned int x, const unsigned int y)
