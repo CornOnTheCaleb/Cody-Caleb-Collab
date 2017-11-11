@@ -72,9 +72,14 @@ namespace term
     return (string(getenv("COLORTERM")) == "truecolor");
   }
 
-  string color (const unsigned char red, const unsigned char green, const unsigned char blue)
+  string foreground_color (const unsigned char red, const unsigned char green, const unsigned char blue)
   {
     return ("\e[38;2;" + to_string(red) + ";" + to_string(green) + ";" + to_string(blue) + "m");
+  }
+
+  string background_color (const unsigned char red, const unsigned char green, const unsigned char blue)
+  {
+    return ("\e[48;2;" + to_string(red) + ";" + to_string(green) + ";" + to_string(blue) + "m"); 
   }
 
   void get_dimensions (int & columns, int & lines)
