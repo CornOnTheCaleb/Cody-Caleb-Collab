@@ -129,7 +129,7 @@ void World::print()
     for(int x = 1; x <= WORLD_WIDTH; x++)
     {
       cout << map[y][x];
-      if(x == WORLD_WIDTH)
+      if(x == WORLD_WIDTH && y != WORLD_LENGTH)
         cout << endl;
     }
   }
