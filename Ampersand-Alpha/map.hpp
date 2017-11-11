@@ -36,7 +36,7 @@ World::World()
       else if(y == TERMINAL_LENGTH)
         map[y][x] = grass;
       else
-        map[y][x] = "\e[1;0;46m \e[1;0;0m";
+        map[y][x] = AIR;
     }
   }
 }
