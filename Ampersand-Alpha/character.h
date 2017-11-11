@@ -11,20 +11,25 @@ class Character
 {
 // VARIABLES:
   string symbol;
-  bool life;
-  unsigned int x_coord, y_coord;
-  unsigned int x_coord_prev, y_coord_prev;
-  int y_velocity, x_velocity, acceleration;
-  int x_terminal_velocity;
+  bool life, jumped;
+  double x_coord, y_coord, x_coord_prev, y_coord_prev;
+  double y_velocity, x_velocity, x_acceleration, x_terminal_velocity;
 
 public:
 
 // DEFAULT CONSTRUCTOR
   Character()
-    {symbol = "\e[1;37;46m" + "&" + term::RESET; x_coord = 0; y_coord = 0;}
+  {
+    symbol = "\e[1;37;46m&" + term::RESET;
+    x_coord = 2;
+    y_coord = TERMINAL_LENGTH - 1;
+    x_velocity = 10;
+    y_velocity = 0;
+    jumped = false;
+  }
 
 // PARAMETERIZED CONSTRUCTOR
-  Character(char* const character, const unsigned int x, const unsigned int y)
+  Character(const string character, const double x, const double y)
     {symbol = character; x_coord = x; y_coord = y;}
 
 // DESTRUCTOR
@@ -39,50 +44,58 @@ public:
   void update_character(World map, TimeManager time)
   {
     // Y VELOCITY
-    if(map.map[y_coord + 1][x_coord] == " " && y_velocity != 0)
+    if(map.map[(int)y_coord - 1][(int)x_coord] == AIR)
       y_velocity += GRAVITY * time.get_delta_time();
-    else
-    {
-      y_velocity = 0;
-      y_velocity += GRAVITY * time.get_delta_time();
-    }
+
     // Y POSITION
     y_coord_prev = y_coord;
     y_coord += y_velocity * time.get_delta_time();
-    cout << "\e[" << y_coord << ";" << x_coord << map.map[y_coord_prev][x_coord_prev] << "H";
+    if(map.map[(int)y_coord][(int)x_coord] != AIR)
+    {
+      y_velocity = 0;
+      jumped = false;
+      y_coord = TERMINAL_LENGTH - 1;
+    }
+    else
+      jumped = true;
+    cout << "\e[" << (int)y_coord << ";" << (int)x_coord << "H" << symbol;
+    if(!((int)y_coord == (int)y_coord_prev || (int)x_coord == (int)x_coord_prev)) 
+      cout << "\e[" << (int)y_coord_prev << ";" << (int)x_coord_prev << "H" << map.map[(int)y_coord_prev][(int)x_coord_prev];
+    cout << (int)y_coord << endl;
   }
 
-      
-
 // MOVE
-  void move(const char input, World map)
+  void move(const char input, World map, TimeManager time)
   {
-    if(input == 'w')
-      jump(map);
+    if(input == 'w' && map.map[(int)y_coord + 1][(int)x_coord] != AIR)
+      jump(map, time);
     else if(input == 'a' || input == 'd')
-      strafe(input, map);
+      strafe(input, map, time);
   }
 
 // STRAFE
-  void strafe(const char input, World map)
+  void strafe(const char input, World map, TimeManager time)
   {
-    if(input == 'a' && map.map[y_coord][x_coord - 1] == " ")
+    if(input == 'a' && map.map[(int)y_coord][(int)x_coord - 1] == AIR)
     {
       x_coord_prev = x_coord;
-      --x_coord;
+      x_coord -= x_velocity * time.get_delta_time();
     }
-    else if(input == 'd' && map.map[y_coord][x_coord + 1] == " ")
+    else if(input == 'd' && map.map[(int)y_coord][(int)x_coord + 1] == AIR)
     {
       x_coord_prev = x_coord;
-      ++x_coord;
+      x_coord += x_velocity * time.get_delta_time();
     }
   }
 
 // JUMP
-  void jump(World map)
+  void jump(World map, TimeManager time)
   {
-    if(y_coord == 54 && map.map[y_coord + 1][x_coord] == " ")
-      y_velocity += 5;    
+    if(map.map[(int)y_coord + 1][(int)x_coord] != AIR && map.map[(int)y_coord - 1][(int)x_coord] == AIR && jumped == false)
+    {
+      y_velocity -= 10;
+      jumped = true;
+    }
   }
 };
     
