@@ -50,28 +50,24 @@ public:
     // Y POSITION
     y_coord_prev = y_coord;
     y_coord += y_velocity * time.get_delta_time();
-    y_coord = ((int)y_coord > TERMINAL_LENGTH - 1 ? TERMINAL_LENGTH - 1 : y_coord); 
+    // bounds character below
+    y_coord = ((int)y_coord > TERMINAL_LENGTH - 1 ? TERMINAL_LENGTH - 1 : y_coord);
+    // bounds character above
+    y_coord = ((int)y_coord < 2 ? 2 : y_coord);
    
-    cout << term::cursor_move_to(59, 1) << term::CLEAR_LINE << "DELTATIME: " << time.get_delta_time() << endl;
-    cout << term::cursor_move_to(60, 1) << term::CLEAR_LINE << "XCOORD: " << (int)x_coord << " " << x_coord << endl;
-    cout << term::cursor_move_to(61, 1) << term::CLEAR_LINE << "PREV: " << (int)x_coord_prev << " " << x_coord_prev << endl;
-    cout << term::cursor_move_to(62, 1) << term::CLEAR_LINE << "YCOORD: " << (int)y_coord << " " << y_coord << endl;
-    cout << term::cursor_move_to(63, 1) << term::CLEAR_LINE << "PREV: " << (int)y_coord_prev << " " << y_coord_prev << endl;
-    cout << term::cursor_move_to(64 ,1) << term::CLEAR_LINE << "BELOW: " << map.map[(int)y_coord + 1][(int)x_coord] << " " << (map.map[(int)y_coord + 1][(int)x_coord] == AIR ? "AIR" : "NOT AIR") << endl;
-    cout << term::cursor_move_to(65, 1) << term::CLEAR_LINE << "JUMPED: ";
-    if(map.map[(int)y_coord + 1][(int)x_coord] != AIR)
+    // if space below charcter is not air, halts character and resets jump
+    if(map.map[(int)y_coord + 1][(int)x_coord] != AIR) 
     {
       y_velocity = 0;
       jumped = false;
-      // y_coord = TERMINAL_LENGTH - 1;
-      cout << "FALSE" << endl;
     }
     else
-    {
       jumped = true;
-      cout << "TRUE" << endl;
-    }
+      
+    // replaces space previously covered by character  
     cout << "\e[" << (int)y_coord << ";" << (int)x_coord << "H" << symbol;
+
+    // output character if it moved
     if(!((int)y_coord == (int)y_coord_prev && (int)x_coord == (int)x_coord_prev)) 
       cout << "\e[" << (int)y_coord_prev << ";" << (int)x_coord_prev << "H" << map.map[(int)y_coord_prev][(int)x_coord_prev];
     cout << flush;
