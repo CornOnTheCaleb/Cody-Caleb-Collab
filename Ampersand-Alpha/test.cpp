@@ -5,7 +5,6 @@ int main()
 {
   PrintManager tmp;
   World fuck;
-  cout << "whoops" << endl;
-  tmp.smart_print(fuck, 1, 1);
+  fuck.print();
   return 0;
 }

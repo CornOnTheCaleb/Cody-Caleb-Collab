@@ -24,11 +24,11 @@ World::World()
       if(x == 1 && y == 1)
         map[y][x] = lCEILING_CORNER;
       else if(x == 1 && y == TERMINAL_LENGTH)
-        map[y][x] = grass;
+        map[y][x] = WALL;
       else if(x == TERMINAL_WIDTH && y == 1)
         map[y][x] = rCEILING_CORNER;
       else if(x == TERMINAL_WIDTH && y == TERMINAL_LENGTH)
-        map[y][x] = grass;
+        map[y][x] = WALL;
       else if(x == 1 || x == TERMINAL_WIDTH)
         map[y][x] = WALL;
       else if(y == 1)
