@@ -14,8 +14,6 @@ World::World()
   map = new string*[TERMINAL_LENGTH + 1];
   for(int i = 0; i <= TERMINAL_LENGTH; i++)
     map[i] = new string[TERMINAL_WIDTH + 1];
-  // creates green grass block  
-  string grass = term::GREEN + BLOCK + term::RESET;
 
   for(int x = 1; x <= TERMINAL_WIDTH; x++)
   {
@@ -34,7 +32,7 @@ World::World()
       else if(y == 1)
         map[y][x] = CEILING;
       else if(y == TERMINAL_LENGTH)
-        map[y][x] = grass;
+        map[y][x] = GRASS;
       else
         map[y][x] = AIR;
     }
