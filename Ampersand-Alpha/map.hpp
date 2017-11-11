@@ -77,9 +77,9 @@ World::World(string map_file)
 ======================================================== */
 World::World(const World & rhs)
 {
-  map = new string*[rhs.WORLD_LENGTH];
+  map = new string*[rhs.WORLD_LENGTH + 1];
   for(int i = 0; i <= rhs.WORLD_LENGTH; i++)
-    map[i] = new string[rhs.WORLD_WIDTH];
+    map[i] = new string[rhs.WORLD_WIDTH + 1];
   WORLD_LENGTH = rhs.WORLD_LENGTH;
   WORLD_WIDTH = rhs.WORLD_WIDTH;
   for(int y = 1; y <= WORLD_LENGTH; y++)
