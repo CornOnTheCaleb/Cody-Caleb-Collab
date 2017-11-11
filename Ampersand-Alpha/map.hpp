@@ -82,9 +82,9 @@ World::World(const World & rhs)
     map[i] = new string[rhs.WORLD_WIDTH];
   WORLD_LENGTH = rhs.WORLD_LENGTH;
   WORLD_WIDTH = rhs.WORLD_WIDTH;
-  for(int y = 0; y <= WORLD_LENGTH; y++)
+  for(int y = 1; y <= WORLD_LENGTH; y++)
   {
-    for(int x = 0; x <= WORLD_WIDTH; x++)
+    for(int x = 1; x <= WORLD_WIDTH; x++)
     {
       map[y][x] = rhs.map[y][x];
     }
