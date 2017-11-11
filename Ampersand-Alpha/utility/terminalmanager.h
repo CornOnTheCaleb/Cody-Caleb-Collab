@@ -90,6 +90,16 @@ namespace term
     lines = size.ws_row;
     return;
   }
+
+  string alternate_terminal ()
+  {
+    return ("\e?1049h");
+  }
+
+  string normal_terminal ()
+  {
+    return ("\e?1049l");
+  }
 };
 
 #endif
