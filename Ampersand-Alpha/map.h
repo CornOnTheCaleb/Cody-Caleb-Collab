@@ -12,8 +12,9 @@
   // INTEGERS:
   const unsigned int TERMINAL_LENGTH = 55, TERMINAL_WIDTH = 211;
   const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
-  const double GRAVITY = -9.8;
+  const double GRAVITY = 19.6;
   // STRINGS:
+  const string AIR = "\e[1;0;46m " + term::RESET;
   const string BLOCK = "▓";
   const string WALL = "║";
   const string CEILING = "═";
