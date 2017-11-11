@@ -17,7 +17,7 @@
   const string AIR = term::background_color(32, 79, 155) + " " + term::RESET;
   const string CLOUD = term::background_color(255, 255, 255) + " " + term::RESET;
   const string BLOCK = "▓";
-  const string GRASS = term::background_color(29, 68, 14) + "▓" + term::RESET;
+  const string GRASS = term::foreground_color(22, 63, 6) + "▓" + term::RESET;
   const string WALL = "║";
   const string CEILING = "═";
   const string lCEILING_CORNER = "╔";

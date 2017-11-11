@@ -2,6 +2,7 @@
 #include "utility/keyboardmanager.h"
 #include "utility/timemanager.h"
 
+// compile with -lpthread flag
 int main()
 {
   World fuck;

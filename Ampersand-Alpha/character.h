@@ -20,7 +20,7 @@ public:
 // DEFAULT CONSTRUCTOR
   Character()
   {
-    symbol = "\e[1;37;46m&" + term::RESET;
+    symbol = term::background_color(32, 79, 155) + "&" + term::RESET;
     x_coord = 2;
     y_coord = TERMINAL_LENGTH - 1;
     x_velocity = 10;
