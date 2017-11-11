@@ -93,12 +93,12 @@ namespace term
 
   string alternate_terminal ()
   {
-    return ("\e?1049h");
+    return ("\e[?1049h");
   }
 
   string normal_terminal ()
   {
-    return ("\e?1049l");
+    return ("\e[?1049l");
   }
 };
 
