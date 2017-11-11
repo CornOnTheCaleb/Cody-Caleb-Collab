@@ -31,7 +31,7 @@ int main()
     fuck.print();
     
     ampersand.update_character(fuck, time);
-    sleep(0.25);
+    usleep(100000);
   }
   cout << "\e[?1049l" << "\e[?25h"; // switches to original terminal << shows cursor
   return 0;
