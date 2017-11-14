@@ -14,8 +14,8 @@
   const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
   const double GRAVITY = 19.6;
   // STRINGS:
-  const string AIR = term::background_color(32, 79, 155) + " " + term::RESET;
-  const string CLOUD = term::background_color(255, 255, 255) + " " + term::RESET;
+  const string AIR = term::foreground_color(32, 79, 155) + " " + term::RESET;
+  const string CLOUD = term::foreground_color(255, 255, 255) + " " + term::RESET;
   const string BLOCK = "▓";
   const string GRASS = term::foreground_color(22, 63, 6) + "▓" + term::RESET;
   const string WALL = "║";
