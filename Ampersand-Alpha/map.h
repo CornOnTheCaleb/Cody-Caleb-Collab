@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <stdlib.h>
 
 // GLOBAL VARIABLES
   // INTEGERS:

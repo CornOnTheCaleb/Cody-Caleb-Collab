@@ -138,13 +138,13 @@ void World::print(const unsigned int x, const unsigned int y)
   int length, l_start, l_stop;
   int width, w_start, w_stop;
 
-  term::get_dimensions(width, length);
+  term::get_dimensions(length, width);
   width = (width > WORLD_WIDTH) ? WORLD_WIDTH : width;
   length = (length > WORLD_LENGTH) ? WORLD_LENGTH : length;
   w_start = (x - width / 2 <= 1) ? 1 : x - width / 2;
-  l_start = (y - length / 2 <= 1) ? 1 : y - length / 2;
+  l_start = (y - 3 <= 1) ? 1 : y - length / 2;
   w_stop = (x + width / 2 >= WORLD_WIDTH) ? WORLD_WIDTH : x + width / 2;
-  l_stop = (y + length / 2 >= WORLD_LENGTH) ? WORLD_LENGTH : x + width / 2;
+  l_stop = (y + length - 3 >= WORLD_LENGTH) ? WORLD_LENGTH : y + length - 3;
 
   for(int y = l_start; y <= l_stop; y++)
   {

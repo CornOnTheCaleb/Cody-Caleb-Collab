@@ -10,7 +10,7 @@
 class Character
 {
 // VARIABLES:
-  string symbol;
+  string symbol, covered;
   bool life, jumped;
   double x_coord, y_coord, x_coord_prev, y_coord_prev;
   double y_velocity, x_velocity, x_acceleration, x_terminal_velocity;
@@ -45,9 +45,18 @@ public:
     life = false;
   }
 
+// GET X COORDINATE
+  int get_x_coord()
+    {return (int)x_coord;}
+
+// GET Y COORDINATE
+  int get_y_coord()
+    {return (int)y_coord;}
+
 // UPDATE
   void update_character(World& map, TimeManager time)
   {
+    covered = map.map[(int)y_coord][(int)x_coord];
     // Y VELOCITY
     if(map.map[(int)y_coord + 1][(int)x_coord] == AIR)
       y_velocity += GRAVITY * time.get_delta_time();
@@ -70,11 +79,11 @@ public:
       jumped = true;
       
     // replaces space previously covered by character  
-    cout << "\e[" << (int)y_coord << ";" << (int)x_coord << "H" << symbol;
+    map.insert((int)x_coord, (int)y_coord, symbol);
 
     // output character if it moved
     if(!((int)y_coord == (int)y_coord_prev && (int)x_coord == (int)x_coord_prev)) 
-      cout << "\e[" << (int)y_coord_prev << ";" << (int)x_coord_prev << "H" << map.map[(int)y_coord_prev][(int)x_coord_prev] << flush;
+      map.insert((int)x_coord_prev, (int)y_coord_prev, covered);
   }
 
 // MOVE

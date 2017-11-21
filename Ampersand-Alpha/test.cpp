@@ -29,12 +29,13 @@ int main()
       break;
     }
     
+    system("clear");
     cout << "\e[1;1H";
-    fuck.print();
+    fuck.print();//ampersand.get_x_coord(), ampersand.get_y_coord());
     cout << flush;
     
     ampersand.update_character(fuck, time);
-    usleep(100000);
+    usleep(1000);//00);
   }
   cout << term::normal_terminal() << term::cursor_show(); //<< "\e[?25h"; // switches to original terminal << shows cursor
   return 0;
