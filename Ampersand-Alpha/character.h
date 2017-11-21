@@ -30,18 +30,23 @@ public:
 
 // PARAMETERIZED CONSTRUCTOR
   Character(const string character, const double x, const double y)
-    {symbol = character; x_coord = x; y_coord = y;}
+  {
+    symbol = character;
+    x_coord = x;
+    y_coord = y;
+    x_velocity = 10;
+    y_velocity = 0;
+    jumped = false;
+  }
 
 // DESTRUCTOR
   ~Character()
   {
-    symbol = " ";
-    cout << "\e[" << y_coord << ";" << x_coord << symbol << "H";
     life = false;
   }
 
 // UPDATE
-  void update_character(World map, TimeManager time)
+  void update_character(World& map, TimeManager time)
   {
     // Y VELOCITY
     if(map.map[(int)y_coord + 1][(int)x_coord] == AIR)
@@ -69,12 +74,11 @@ public:
 
     // output character if it moved
     if(!((int)y_coord == (int)y_coord_prev && (int)x_coord == (int)x_coord_prev)) 
-      cout << "\e[" << (int)y_coord_prev << ";" << (int)x_coord_prev << "H" << map.map[(int)y_coord_prev][(int)x_coord_prev];
-    cout << flush;
+      cout << "\e[" << (int)y_coord_prev << ";" << (int)x_coord_prev << "H" << map.map[(int)y_coord_prev][(int)x_coord_prev] << flush;
   }
 
 // MOVE
-  void move(const char input, World map, TimeManager time)
+  void move(const char input, World& map, TimeManager time)
   {
     if(input == 'w' && map.map[(int)y_coord + 1][(int)x_coord] != AIR)
       jump(map, time);
@@ -83,7 +87,7 @@ public:
   }
 
 // STRAFE
-  void strafe(const char input, World map, TimeManager time)
+  void strafe(const char input, World& map, TimeManager time)
   {
     if(input == 'a' && map.map[(int)y_coord][(int)x_coord - 1] == AIR)
     {
@@ -98,11 +102,11 @@ public:
   }
 
 // JUMP
-  void jump(World map, TimeManager time)
+  void jump(World& map, TimeManager time)
   {
     if(map.map[(int)y_coord + 1][(int)x_coord] != AIR && map.map[(int)y_coord - 1][(int)x_coord] == AIR && jumped == false)
     {
-      y_velocity -= 10;
+      y_velocity -= 15;
       jumped = true;
     }
   }

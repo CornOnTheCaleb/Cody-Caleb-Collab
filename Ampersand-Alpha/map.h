@@ -12,12 +12,12 @@
   // INTEGERS:
   const unsigned int TERMINAL_LENGTH = 55, TERMINAL_WIDTH = 211;
   const unsigned int MAX_CHARACTER_HEIGHT = 2, MIN_CHARACTER_HEIGHT = 54;
-  const double GRAVITY = 19.6;
+  const double GRAVITY = 50;
   // STRINGS:
-  const string AIR = term::foreground_color(32, 79, 155) + "▓" + term::RESET;
-  const string CLOUD = term::foreground_color(255, 255, 255) + "▓" + term::RESET;
+  const string AIR = term::foreground_color(32, 79, 155) + term::background_color(32, 79,155) + "▓" + term::RESET;
+  const string CLOUD = term::foreground_color(255, 255, 255) + term::background_color(255, 255, 255) + "▓" + term::RESET;
   const string BLOCK = "▓";
-  const string GRASS = term::foreground_color(22, 63, 6) + "▓" + term::RESET;
+  const string GRASS = term::foreground_color(22, 63, 6) + term::background_color(22, 63, 6) + "▓" + term::RESET;
   const string WALL = "║";
   const string CEILING = "═";
   const string lCEILING_CORNER = "╔";
@@ -46,6 +46,8 @@ public:
   void remove(const unsigned int x_coord, const unsigned int y_coord, const string character = " ");
 
   void print();
+
+  void print(const unsigned int x, const unsigned int y);
 
   void clear();
 

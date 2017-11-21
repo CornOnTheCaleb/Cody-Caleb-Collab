@@ -5,13 +5,14 @@
 // compile with -lpthread flag
 int main()
 {
-  World fuck;
-  Character ampersand;
+  World fuck;//("first_try.txt");
+  Character ampersand;//(term::background_color(32, 79, 155) + "&" + term::RESET, 2, TERMINAL_LENGTH - 3);
   TimeManager time;
   KeyboardManager keyboard("/dev/input/event0");
 
+  
   keyboard.init(); // gets keyboard input
-  cout << "\e[?1049h" << "\e[?25l"; // switches to alternate terminal << hides cursor
+  cout << term::alternate_terminal() << term::cursor_hide(); // switches to alternate terminal << hides cursor
   while(true)
   {
     time.update();
@@ -30,10 +31,11 @@ int main()
     
     cout << "\e[1;1H";
     fuck.print();
+    cout << flush;
     
     ampersand.update_character(fuck, time);
     usleep(100000);
   }
-  cout << "\e[?1049l" << "\e[?25h"; // switches to original terminal << shows cursor
+  cout << term::normal_terminal() << term::cursor_show(); //<< "\e[?25h"; // switches to original terminal << shows cursor
   return 0;
 }
