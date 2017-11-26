@@ -28,6 +28,21 @@ namespace xcab
         m_window = XCreateSimpleWindow(display, parent, x, y, width, height, borderWidth, border, background);
       }
 
+      window (
+        ::Display * display,
+        ::Window parent,
+        const int x, const int y,
+        const unsigned int width, const unsigned int height,
+        const unsigned int borderWidth,
+        const int depth,
+        const unsigned int type,
+        Visual * visual,
+        const unsigned long valueMask,
+        XSetWindowAttributes * attributes) : m_display(display)
+      {
+        m_window = XCreateWindow(display, parent, x, y, width, height, borderWidth, depth, type, visual, valueMask, attributes);
+      }
+
       ~window ()
       {
         XDestroyWindow(m_display, m_window);

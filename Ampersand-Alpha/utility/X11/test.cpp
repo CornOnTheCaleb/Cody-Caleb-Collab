@@ -5,13 +5,15 @@
 #include "display.h"
 #include "window.h"
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
-int main ()
+int main (int argc, char ** argv)
 {
   xcab::display display(NULL);
-  xcab::window window(display, XDefaultRootWindow(display), 0, 0, 200, 100, 0, 0, 0);
+  //xcab::window window(display, XDefaultRootWindow(display), 0, 0, 100, 100, 0, 0, 0);
+  xcab::window window(display, XDefaultRootWindow(display), 0, 0, 100, 100, 0, CopyFromParent, InputOnly, 0, 0, 0); 
   window.show();
   XSelectInput(display, window, KeyPressMask | KeyReleaseMask);
   XEvent report;
