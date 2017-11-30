@@ -5,8 +5,8 @@
 // compile with -lpthread flag
 int main()
 {
-  World fuck;//("first_try.txt");
-  Character ampersand;//(term::background_color(32, 79, 155) + "&" + term::RESET, 2, TERMINAL_LENGTH - 3);
+  World fuck("first_try.txt");
+  Character ampersand(term::background_color(32, 79, 155) + "&" + term::RESET, 2, TERMINAL_LENGTH - 3);
   TimeManager time;
   KeyboardManager keyboard("/dev/input/event0");
 

@@ -43,7 +43,7 @@ World::World()
 =================================================================
 --------------------PARAMETERIZED CONSTRUCTOR--------------------
 ================================================================= */
-World::World(string map_file)
+World::World(const string map_file)
 {
   unsigned int length, width;
   string tmp;
@@ -64,9 +64,13 @@ World::World(string map_file)
     for(int x = 1; x <= width; x++)
     {
       fin >> tmp;
+      // cout << "[" << tmp << "]" << "(" << x << ", " << y << ")" << endl;
+      // usleep(50000);
       map[y][x] = tmp;
     }
   }
+
+  fin.close();
 }
 
 /*

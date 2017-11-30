@@ -17,9 +17,9 @@ int main()
   for(int i = 0; i < input.size(); i++)
   {
     if(input[i] == '1')
-      cout << rCEILING_CORNER << endl;
-    else if(input[i] == '2')
       cout << lCEILING_CORNER << endl;
+    else if(input[i] == '2')
+      cout << rCEILING_CORNER << endl;
     else if(input[i] == '8')
       cout << CEILING << endl;
     else if(input[i] == '4')

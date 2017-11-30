@@ -60,7 +60,7 @@ public:
   {
     // covered = map.map[(int)y_coord][(int)x_coord];
     // Y VELOCITY
-    if(map.map[(int)y_coord + 1][(int)x_coord] == AIR)
+    if(map.map[(int)y_coord + 1][(int)x_coord] != GRASS)
       y_velocity += GRAVITY * time.get_delta_time();
 
     // Y POSITION
@@ -71,63 +71,90 @@ public:
     // bounds character above
     y_coord = ((int)y_coord < 2 ? 2 : y_coord);
 
+    x_coord_prev = x_coord;
+    x_coord = x_coord + x_velocity * time.get_delta_time();
+    x_velocity = 0;
+
+    double y = y_coord_prev;
+    bool moving = true;
+    if (y < y_coord)
+    {
+      while (moving)
+      {
+        if (map.map[(int)y + 1][(int)x_coord] != GRASS && y < y_coord)
+        {
+          y += 1;
+          if (y > y_coord)
+          {
+            y = y_coord;
+          }
+        }
+        else
+        {
+          if (y != y_coord)
+          {
+            jumped = false;
+            y_velocity = 0;
+          }
+          moving = false;
+        }
+      }
+    }
+    else if (y > y_coord)
+    {
+      while (moving)
+      {
+        if (map.map[(int)y - 1][(int)x_coord] != GRASS && y > y_coord)
+        {
+          y -= 1;
+          if (y < y_coord)
+          {
+            y = y_coord;
+          }
+        }
+        else
+        {
+          if (y != y_coord)
+          {
+            y_velocity = 0;
+          }
+          moving = false;
+        }
+      }
+    }
+    y_coord = y;
+
     /* DEBUG */
-    bool DEBUG = true;
+    bool DEBUG = false;
     if (DEBUG)
     {
-      x_coord_prev = x_coord;
-      x_coord = x_coord + x_velocity * time.get_delta_time();
-      x_velocity = 0;
-      cout << term::cursor_move_to(56, 1) << "x_coord: " << x_coord << " (" << (int)x_coord << ")" << endl
-        << "x_coord_prev: " << x_coord_prev << " (" << (int)x_coord_prev << ")" << endl
-        << "y_coord: " << y_coord << " (" << (int)y_coord << ")" << endl
-        << "y_coord_prev: " << y_coord_prev << " (" << (int)y_coord_prev << ")" << endl
-        << "previous: " << map.map[(int)y_coord_prev][(int)x_coord_prev] << endl
-        << "current: " << map.map[(int)y_coord][(int)x_coord] << endl
-        << "symbol: " << symbol << endl
-        << "covered: " << covered << endl
-        << "changed: ";
+      cout << term::cursor_move_to(56, 1) << "delta time: " << time.get_delta_time() << " seconds" << term::CLEAR_LINE << endl
+        << "x_coord: " << x_coord << " (" << (int)x_coord << ")" << term::CLEAR_LINE << endl
+        << "x_coord_prev: " << x_coord_prev << " (" << (int)x_coord_prev << ")" << term::CLEAR_LINE << endl
+        << "y_coord: " << y_coord << " (" << (int)y_coord << ")" << term::CLEAR_LINE << endl
+        << "y_coord_prev: " << y_coord_prev << " (" << (int)y_coord_prev << ")" << term::CLEAR_LINE << endl
+        << "previous: " << map.map[(int)y_coord_prev][(int)x_coord_prev] << term::CLEAR_LINE << endl
+        << "current: " << map.map[(int)y_coord][(int)x_coord] << term::CLEAR_LINE << endl
+        << "symbol: " << symbol << term::CLEAR_LINE << endl
+        << "covered: " << covered << term::CLEAR_LINE << endl;
     }
-
-    if(!((int)y_coord == (int)y_coord_prev && (int)x_coord == (int)x_coord_prev)) 
-    {
-      covered = map.map[(int)y_coord][(int)x_coord];
-      if (DEBUG)
-      {
-        cout << "TRUE" << endl;
-      }
-    }
-    else
-    {
-      if (DEBUG)
-      {
-        cout << "FALSE" << endl;
-      }
-    }
-
-    // if space below charcter is not air, halts character and resets jump
-    if(map.map[(int)y_coord + 1][(int)x_coord] != AIR) 
-    {
-      y_velocity = 0;
-      jumped = false;
-    }
-    else
-      jumped = true;
-      
-    // replaces space previously covered by character  
-    map.insert((int)x_coord, (int)y_coord, symbol);
 
     // output character if it moved
     if(!((int)y_coord == (int)y_coord_prev && (int)x_coord == (int)x_coord_prev)) 
     {  
       map.insert((int)x_coord_prev, (int)y_coord_prev, covered);
+      covered = map.map[(int)y_coord][(int)x_coord];
+      size_t a = covered.find("\e[48;2;");
+      size_t b = covered.find("m", a);
+      symbol = covered.substr(a, b - a + 1) + "&" + term::RESET;
+      map.insert((int)x_coord, (int)y_coord, symbol);
     }
   }
 
 // MOVE
   void move(const char input, World& map, TimeManager time)
   {
-    if(input == 'w' && map.map[(int)y_coord + 1][(int)x_coord] != AIR)
+    if(input == 'w' && map.map[(int)y_coord + 1][(int)x_coord] == GRASS)
       jump(map, time);
     else if(input == 'a' || input == 'd')
       strafe(input, map, time);
@@ -136,13 +163,13 @@ public:
 // STRAFE
   void strafe(const char input, World& map, TimeManager time)
   {
-    if(input == 'a' && map.map[(int)y_coord][(int)x_coord - 1] == AIR)
+    if(input == 'a' && map.map[(int)y_coord][(int)x_coord - 1] != GRASS)
     {
       x_velocity = -10;
       // x_coord_prev = x_coord;
       // x_coord -= x_velocity * time.get_delta_time();
     }
-    else if(input == 'd' && map.map[(int)y_coord][(int)x_coord + 1] == AIR)
+    else if(input == 'd' && map.map[(int)y_coord][(int)x_coord + 1] != GRASS)
     {
       x_velocity = 10;
       // x_coord_prev = x_coord;
@@ -153,9 +180,9 @@ public:
 // JUMP
   void jump(World& map, TimeManager time)
   {
-    if(map.map[(int)y_coord + 1][(int)x_coord] != AIR && map.map[(int)y_coord - 1][(int)x_coord] == AIR && jumped == false)
+    if(map.map[(int)y_coord + 1][(int)x_coord] == GRASS && map.map[(int)y_coord - 1][(int)x_coord] != GRASS && jumped == false)
     {
-      y_velocity -= 15;
+      y_velocity -= 25;
       jumped = true;
     }
   }
