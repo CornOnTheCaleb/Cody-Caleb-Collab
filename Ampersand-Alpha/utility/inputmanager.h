@@ -16,9 +16,10 @@
 
 class InputManager
 {
-  private:
+  public:
     Display * m_display;
     Window m_window;
+    XWindowAttributes m_windowAttributes;
     char m_keyboard[32];
     int m_mouseXPos;
     int m_mouseYPos;
@@ -46,6 +47,7 @@ class InputManager
     {
       m_display = XOpenDisplay(0);
       m_window = DefaultRootWindow(m_display);
+      update();
       set_block_state(false);
     }
 
@@ -72,6 +74,7 @@ class InputManager
       int tmpInt;
       XQueryKeymap(m_display, m_keyboard);
       XQueryPointer(m_display, m_window, &tmpWindow, &tmpWindow, &m_mouseXPos, &m_mouseYPos, &tmpInt, &tmpInt, &m_mouseButtonMask);
+      XGetWindowAttributes(m_display, m_window, &m_windowAttributes);
       return;
     }
 
@@ -104,6 +107,11 @@ class InputManager
     int get_mouse_y_pos () const
     {
       return m_mouseYPos;
+    }
+
+    XWindowAttributes get_window_attributes () const
+    {
+      return m_windowAttributes;
     }
 };
 
