@@ -1,45 +1,27 @@
-#include <X11/Xlib.h>
-#include <X11/keysym.h>
-#include <X11/Xutil.h>
-#include <unistd.h>
-#include "display.h"
-#include "window.h"
 #include <iostream>
-#include <cstdlib>
+#include "inputmanager.h"
+#include "../terminalmanager.h"
 
 using namespace std;
 
-int main (int argc, char ** argv)
+int main ()
 {
-  xcab::display display(NULL);
-  //xcab::window window(display, XDefaultRootWindow(display), 0, 0, 100, 100, 0, 0, 0);
-  xcab::window window(display, XDefaultRootWindow(display), 0, 0, 100, 100, 0, CopyFromParent, InputOnly, 0, 0, 0); 
-  window.show();
-  XSelectInput(display, window, KeyPressMask | KeyReleaseMask);
-  XEvent report;
-  cout << "Entering loop" << endl;
-  while (true)
+  InputManager input;
+  bool terminate = false;
+  cout << term::alternate_terminal() << flush;
+  while (!terminate)
   {
-    XNextEvent(display, &report);
-    switch (report.type)
+    input.update();
+    if (input.get_key_state(XK_Escape))
     {
-      case KeyPress:
-      {
-        char buf[11];
-        KeySym keysym;
-        XComposeStatus status;
-        int count = XLookupString (&report.xkey, buf, 10, &keysym, &status);
-        buf[count] = 0;
-        cout << keysym << " " << buf << " " << report.xkey.state << endl;
-        break;
-      }
-      default:
-      {
-        cout << "Other" << endl;
-        break;
-      }
+      terminate = true;
+    }
+    else
+    {
+      cout << "(" << input.get_mouse_x_pos() << ", " << input.get_mouse_y_pos() << ") "
+        << "Left: " << input.get_mouse_left_button() << " Middle: " << input.get_mouse_middle_button() << " Right: " << input.get_mouse_right_button() << endl;
     }
   }
-  sleep(5);
+  cout << term::normal_terminal() << flush;
   return 0;
 }
