@@ -5,6 +5,14 @@
 #include <X11/keysym.h>
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <sys/select.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <termios.h>
+#include <fcntl.h>
+#include <linux/input.h>
 
 class InputManager
 {
@@ -15,11 +23,47 @@ class InputManager
     int m_mouseXPos;
     int m_mouseYPos;
     unsigned int m_mouseButtonMask;
+  private:
+    void set_block_state (const bool state)
+    {
+      termios ttystate;
+      tcgetattr(STDIN_FILENO, &ttystate);
+      if (state == false)
+      {
+        ttystate.c_lflag &= (~ICANON & ~ECHO);
+        ttystate.c_cc[VMIN] = 1;
+      }
+      else if (state == true)
+      {
+        ttystate.c_lflag |= ICANON | ECHO;
+      }
+      tcsetattr(STDIN_FILENO, TCSANOW, &ttystate);
+
+      return;
+    }
   public:
     InputManager ()
     {
       m_display = XOpenDisplay(0);
       m_window = DefaultRootWindow(m_display);
+      set_block_state(false);
+    }
+
+    ~InputManager ()
+    {
+      set_block_state(true);
+    }
+
+    void flush_stdin_until (const int end)
+    {
+      do
+      {
+        int c = fgetc(stdin);
+        if (c == end)
+        {
+          break;
+        }
+      } while (true);
     }
 
     void update ()
