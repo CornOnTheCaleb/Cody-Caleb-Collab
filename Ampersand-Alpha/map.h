@@ -26,6 +26,7 @@
   const string lFLOOR_CORNER = "╚";
   const string rFLOOR_CORNER = "╝";
 
+bool is_solid (const string & block);
 
 class World
 {

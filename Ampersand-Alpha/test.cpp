@@ -1,40 +1,42 @@
 #include "character.h"
-#include "utility/keyboardmanager.h"
+#include "utility/inputmanager.h"
 #include "utility/timemanager.h"
+#include "utility/printmanager.h"
 
-// compile with -lpthread flag
+// compile with -lX11 flag
 int main()
 {
-  World fuck("second_try.txt");
+  World world("second_try.txt");
   Character ampersand(term::background_color(32, 79, 155) + "&" + term::RESET, 2, TERMINAL_LENGTH - 3);
   TimeManager time;
-  KeyboardManager keyboard("/dev/input/event0");
-
+  InputManager input;
+  PrintManager printer;
   
-  keyboard.init(); // gets keyboard input
   cout << term::alternate_terminal() << term::cursor_hide(); // switches to alternate terminal << hides cursor
   while(true)
   {
+    input.update();
     time.update();
 
-    if(keyboard.get_key_state(KEY_A))
-      ampersand.move('a', fuck, time);
-    if(keyboard.get_key_state(KEY_D))
-      ampersand.move('d', fuck, time);
-    if(keyboard.get_key_state(KEY_W))
-      ampersand.move('w', fuck, time);
-    if(keyboard.get_key_state(KEY_ESC))
+    if(input.get_key_state(XK_a))
+      ampersand.move('a', world, time);
+    if(input.get_key_state(XK_d))
+      ampersand.move('d', world, time);
+    if(input.get_key_state(XK_w))
+      ampersand.move('w', world, time);
+    if(input.get_key_state(XK_Escape))
     {
-      keyboard.terminate(27);
+      input.flush_stdin_until(27);
       break;
     }
      
-    cout << "\e[1;1H";
+    ampersand.update_character(world, time);
+    printer.print(world, 0, 0, true);
+    /*cout << "\e[1;1H";
     fuck.print();//ampersand.get_x_coord(), ampersand.get_y_coord());
-    cout << flush;
-    
-    ampersand.update_character(fuck, time);
-    usleep(100000);
+    cout << flush;*/
+   
+    // usleep(50000);
   }
   cout << term::normal_terminal() << term::cursor_show(); //<< "\e[?25h"; // switches to original terminal << shows cursor
   return 0;

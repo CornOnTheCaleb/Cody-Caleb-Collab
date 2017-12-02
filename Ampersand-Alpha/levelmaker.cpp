@@ -47,6 +47,10 @@ int main (int argc, char ** argv)
         {
           world.insert(x + 2, y + 2, CLOUD);
         }
+        else if (input.get_key_state(XK_Up))
+        {
+          
+        }
       }
       print.print(world, 0, 0, true);
     
