@@ -1,4 +1,5 @@
-#include "character.h"
+//#include "character.h"
+#include "enemy.h"
 #include "utility/inputmanager.h"
 #include "utility/timemanager.h"
 #include "utility/printmanager.h"
@@ -7,7 +8,8 @@
 int main()
 {
   World world("second_try.txt");
-  Character ampersand(term::background_color(32, 79, 155) + "&" + term::RESET, 2, TERMINAL_LENGTH - 3);
+  Character ampersand(term::foreground_color(255, 0, 0) + "&" + term::RESET, term::background_color(32, 79, 155), 2, TERMINAL_LENGTH - 3, 20);
+  Enemy fuckface(term::foreground_color(255, 0, 0) + "#" + term::RESET, term::background_color(32, 79, 155), 10, TERMINAL_LENGTH - 3, 10);
   TimeManager time;
   InputManager input;
   PrintManager printer;
@@ -29,8 +31,10 @@ int main()
       input.flush_stdin_until(27);
       break;
     }
+    fuckface.move(world, time, ampersand);
      
     ampersand.update_character(world, time);
+    fuckface.update_character(world, time);
     printer.print(world, 1, 1, true);
     /*cout << "\e[1;1H";
     fuck.print();//ampersand.get_x_coord(), ampersand.get_y_coord());
