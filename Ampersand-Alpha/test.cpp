@@ -31,7 +31,7 @@ int main()
     }
      
     ampersand.update_character(world, time);
-    printer.print(world, 0, 0, true);
+    printer.print(world, 1, 1, true);
     /*cout << "\e[1;1H";
     fuck.print();//ampersand.get_x_coord(), ampersand.get_y_coord());
     cout << flush;*/

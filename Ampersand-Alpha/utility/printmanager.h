@@ -13,16 +13,20 @@ class PrintManager
     PrintManager () : m_hasPrinted(false) {}
     void print (const World & world, const int column, const int line, const bool smart)
     {
-      for (int y = 1; y <= world.WORLD_LENGTH; ++y)
+      print(world, column, line, 1, world.WORLD_WIDTH, 1, world.WORLD_LENGTH, smart);
+    }
+    void print (const World & world, const int column, const int line, const int fromX, const int toX, const int fromY, const int toY, const bool smart)
+    {
+      for (int y = fromY; y <= toY; ++y)
       {
-        cout << term::cursor_move_to(line + y, column);
-        for (int x = 1; x <= world.WORLD_WIDTH; ++x)
+        cout << term::cursor_move_to(line + (y - fromY), column);
+        for (int x = fromX; x <= toX; ++x)
         {
           if (m_hasPrinted && smart)
           {
             if (world.map[y][x] != m_previous.map[y][x])
             {
-              cout << term::cursor_move_to(line + y, column + x) << world.map[y][x];
+              cout << term::cursor_move_to(line + (y - fromY), column + (x - fromX)) << world.map[y][x];
             }
           }
           else

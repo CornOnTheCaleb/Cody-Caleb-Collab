@@ -168,13 +168,13 @@ public:
   {
     if(input == 'a' && !is_solid(map.map[(int)y_coord][(int)x_coord - 1]))
     {
-      x_velocity = -10;
+      x_velocity = -20;
       // x_coord_prev = x_coord;
       // x_coord -= x_velocity * time.get_delta_time();
     }
     else if(input == 'd' && !is_solid(map.map[(int)y_coord][(int)x_coord + 1]))
     {
-      x_velocity = 10;
+      x_velocity = 20;
       // x_coord_prev = x_coord;
       // x_coord += x_velocity * time.get_delta_time();
     }
