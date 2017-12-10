@@ -4,20 +4,24 @@
 #include "utility/inputmanager.h"
 #include "utility/timemanager.h"
 #include "utility/printmanager.h"
+#include "utility/calibrationmanager.h"
 #include "map.h"
 
 using namespace std;
 
-const int Y_OFFSET = 90;
-
 int main (int argc, char ** argv)
 {
+  CalibrationManager calibrator;
+
   World world;
   {
     InputManager input;
     TimeManager time;
     PrintManager print;
     cout << term::alternate_terminal() << term::cursor_hide() << flush;
+    
+    calibrator.calibrate(input);
+    
     int terminalWidth, terminalHeight;
     int fromX = 1, toX = world.WORLD_WIDTH, fromY = 1, toY = world.WORLD_LENGTH;
     bool smart = true;
@@ -84,12 +88,10 @@ int main (int argc, char ** argv)
         }
       }
       
-      float mouseX = input.get_mouse_x_pos();
-      float mouseY = input.get_mouse_y_pos() - Y_OFFSET;
-      int x = ((float)terminalWidth / attr.width) * mouseX;
-      int y = ((float)terminalHeight / (attr.height - Y_OFFSET)) * mouseY;
-      x = x + fromX + 1;
-      y = y + fromY + 1;
+      double mouseX = input.get_mouse_x_pos();
+      double mouseY = input.get_mouse_y_pos();
+      int x = calibrator.convert_x(mouseX) + fromX - 1;
+      int y = calibrator.convert_y(mouseY) + fromY - 1;
 
       if (x <= world.WORLD_WIDTH && y <= world.WORLD_LENGTH && x >= 1 && y >= 1)
       {
@@ -139,21 +141,6 @@ int main (int argc, char ** argv)
       toY = (toY > terminalHeight ? terminalHeight : toY);
       print.print(world, 1, 1, fromX, toX, fromY, toY, smart);
       smart = true;
-    
-      bool debug = false;
-      if (debug)
-      {
-        cout << term::cursor_move_to(56, 1) << "Delta time: " << time.get_delta_time() << term::CLEAR_LINE << endl;
-        cout << "mouse: (" << mouseX << ", " << mouseY << ")" << term::CLEAR_LINE << endl;
-        cout << "screen: (" << attr.width << ", " << attr.height << ")" << term::CLEAR_LINE << endl;
-        cout << "ratio x: " << (float)mouseX / attr.width << term::CLEAR_LINE << endl;
-        cout << "ratio y: " << (float)mouseY / attr.height << term::CLEAR_LINE << endl;
-        cout << "cursor: (" << x << ", " << y << ")" << term::CLEAR_LINE << endl;
-        cout << "terminal: (" << terminalWidth << ", " << terminalHeight << ")" << term::CLEAR_LINE << endl;
-        cout << "ratio x: " << (float)x / terminalWidth << term::CLEAR_LINE << endl;
-        cout << "ratio y: " << (float)y / terminalHeight << term::CLEAR_LINE << endl;
-        cout << "world: " << "(" << fromX << ", " << fromY << ") (" << toX << ", " << toY << ")" << endl;
-      }
     }
     input.flush_stdin_until(27);
   }
