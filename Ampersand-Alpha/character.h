@@ -9,7 +9,11 @@
 ================================================= */
 class Character
 {
-protected: 
+#ifdef DEBUG
+public:
+#else
+protected:
+#endif
 // VARIABLES:
   string background, symbol, covered;
   bool life, jumped;
@@ -27,8 +31,8 @@ public:
     y_coord = TERMINAL_LENGTH - 1;
     x_velocity = 10;
     y_velocity = 0;
-    jumped = false;
     covered = AIR;
+    jumped = false;
   }
 
 // PARAMETERIZED CONSTRUCTOR
@@ -41,8 +45,8 @@ public:
     speed = vroom;
     x_velocity = 0;
     y_velocity = 0;
-    jumped = false;
     covered = AIR;
+    jumped = false;
   }
 
 // DESTRUCTOR
@@ -78,8 +82,57 @@ public:
     x_coord = x_coord + x_velocity * time.get_delta_time();
     x_velocity = 0;
 
-    double y = y_coord_prev;
+    double x = x_coord_prev;
     bool moving = true;
+    if (x < x_coord)
+    {
+      while (moving)
+      {
+        if (!is_solid(map.map[(int)y_coord_prev][(int)x + 1]) && x < x_coord)
+        {
+          x += 1;
+          if (x > x_coord)
+          {
+            x = x_coord;
+          }
+        }
+        else
+        {
+          if (x != x_coord)
+          {
+            x_velocity = 0;
+            x = (int)(x + 1) - 0.0001;
+          }
+          moving = false;
+        }
+      }
+    }
+    else if (x > x_coord)
+    {
+      while (moving)
+      {
+        if (!is_solid(map.map[(int)y_coord_prev][(int)x - 1]) && x > x_coord)
+        {
+          x -= 1;
+          if (x < x_coord)
+          {
+            x = x_coord;
+          }
+        }
+        else
+        {
+          if (x != x_coord)
+          {
+            x_velocity = 0;
+          }
+          moving = false;
+        }
+      }
+    }
+    x_coord = x;
+
+    double y = y_coord_prev;
+    moving = true;
     if (y < y_coord)
     {
       while (moving)
@@ -96,9 +149,9 @@ public:
         {
           if (y != y_coord)
           {
-            jumped = false;
             y_velocity = 0;
             y = (int)(y + 1) - 0.0001;
+            jumped = false;
           }
           moving = false;
         }
@@ -126,24 +179,11 @@ public:
         }
       }
     }
-    y_coord = y;
-
-    /* DEBUG */
-    bool DEBUG = false;
-    if (DEBUG)
+    if (y == y_coord_prev)
     {
-      cout << term::cursor_move_to(56, 1) << "delta time: " << time.get_delta_time() << " seconds" << term::CLEAR_LINE << endl
-        << "x_coord: " << x_coord << " (" << (int)x_coord << ")" << term::CLEAR_LINE << endl
-        << "x_coord_prev: " << x_coord_prev << " (" << (int)x_coord_prev << ")" << term::CLEAR_LINE << endl
-        << "y_coord: " << y_coord << " (" << (int)y_coord << ")" << term::CLEAR_LINE << endl
-        << "y_coord_prev: " << y_coord_prev << " (" << (int)y_coord_prev << ")" << term::CLEAR_LINE << endl
-        << "previous: " << map.map[(int)y_coord_prev][(int)x_coord_prev] << term::CLEAR_LINE << endl
-        << "current: " << map.map[(int)y_coord][(int)x_coord] << term::CLEAR_LINE << endl
-        << "symbol: " << symbol << term::CLEAR_LINE << endl
-        << "covered: " << covered << term::CLEAR_LINE << endl
-        << "below: " << map.map[(int)y_coord + 1][(int)x_coord] << term::CLEAR_LINE << endl
-        << "above: " << map.map[(int)y_coord - 1][(int)x_coord] << term::CLEAR_LINE << endl;
+      jumped = false;
     }
+    y_coord = y;
 
     // output character if it moved
     if(!((int)y_coord == (int)y_coord_prev && (int)x_coord == (int)x_coord_prev)) 
@@ -179,9 +219,9 @@ public:
 // JUMP
   void jump(World& map, TimeManager time)
   {
-    if(/*is_solid(map.map[(int)y_coord + 1][(int)x_coord]) && !is_solid(map.map[(int)y_coord - 1][(int)x_coord]) &&*/ jumped == false)
+    if(is_solid(map.map[(int)y_coord + 1][(int)x_coord]) && !is_solid(map.map[(int)y_coord - 1][(int)x_coord]) && !jumped)
     {
-      y_velocity -= 25;
+      y_velocity = -25;
       jumped = true;
     }
   }

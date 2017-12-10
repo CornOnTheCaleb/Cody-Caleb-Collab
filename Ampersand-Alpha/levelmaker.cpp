@@ -91,7 +91,7 @@ int main (int argc, char ** argv)
       x = x + fromX + 1;
       y = y + fromY + 1;
 
-      if (x <= world.WORLD_WIDTH - 1 && y <= world.WORLD_LENGTH && x >= 2 && y >= 2)
+      if (x <= world.WORLD_WIDTH && y <= world.WORLD_LENGTH && x >= 1 && y >= 1)
       {
         if (input.get_key_state(XK_1))
         {
@@ -104,6 +104,30 @@ int main (int argc, char ** argv)
         else if (input.get_key_state(XK_3))
         {
           world.insert(x, y, CLOUD);
+        }
+        else if (input.get_key_state(XK_4))
+        {
+          world.insert(x, y, WALL);
+        }
+        else if (input.get_key_state(XK_5))
+        {
+          world.insert(x, y, CEILING);
+        }
+        else if (input.get_key_state(XK_6))
+        {
+          world.insert(x, y, lCEILING_CORNER);
+        }
+        else if (input.get_key_state(XK_7))
+        {
+          world.insert(x, y, rCEILING_CORNER);
+        }
+        else if (input.get_key_state(XK_8))
+        {
+          world.insert(x, y, lFLOOR_CORNER);
+        }
+        else if (input.get_key_state(XK_9))
+        {
+          world.insert(x, y, rFLOOR_CORNER);
         }
       }
       
