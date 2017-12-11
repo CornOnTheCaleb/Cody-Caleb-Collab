@@ -73,8 +73,6 @@ World::World(const string map_file)
     for(int x = 1; x <= width; x++)
     {
       fin >> tmp;
-      cout << "[" << tmp << "]" << "(" << x << ", " << y << ")" << endl;
-      usleep(50000);
       map[y][x] = tmp;
     }
   }

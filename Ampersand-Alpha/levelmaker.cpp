@@ -106,13 +106,13 @@ int main (int argc, char ** argv)
           smart = false;
         }
       }
-      if (terminalWidth >= world.WORLD_WIDTH && !smart)
+      if (terminalWidth >= world.WORLD_WIDTH && terminalWidth != prevTerminalWidth)
       {
         fromX = 1;
         toX = world.WORLD_WIDTH;
         smart = false;
       }
-      if (terminalHeight >= world.WORLD_LENGTH && !smart)
+      if (terminalHeight >= world.WORLD_LENGTH && terminalHeight != prevTerminalHeight)
       {
         fromY = 1;
         toY = world.WORLD_LENGTH;
