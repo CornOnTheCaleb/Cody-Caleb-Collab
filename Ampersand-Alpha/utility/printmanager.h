@@ -19,7 +19,6 @@ class PrintManager
     {
       for (int y = fromY; y <= toY; ++y)
       {
-        cout << term::cursor_move_to(line + (y - fromY), column);
         for (int x = fromX; x <= toX; ++x)
         {
           if (m_hasPrinted && smart)
@@ -32,7 +31,7 @@ class PrintManager
           else
           {
             string temp = world.map[y][x];
-            cout << temp;
+            cout << term::cursor_move_to(line + (y - fromY), column + (x - fromX)) << temp;
           }
           m_previous.map[y][x] = world.map[y][x];
         }

@@ -3,6 +3,7 @@
 #include <vector>
 #include "utility/terminalmanager.h"
 #include "utility/inputmanager.h"
+#include "utility/timemanager.h"
 #include "utility/printmanager.h"
 #include "utility/calibrationmanager.h"
 #include "map.h"
@@ -11,6 +12,9 @@ using namespace std;
 
 vector< pair< vector< vector<int> >, string > > MATERIAL_KEY_COMBOS =
 {
+  {{{XK_1}}, GRASS},
+  {{{XK_2}}, CLOUD},
+  {{{XK_3}}, AIR},
   {{{XK_w}, {XK_s}}, CEILING},
   {{{XK_a}, {XK_d}}, WALL},
   {{{XK_w, XK_a}}, lCEILING_CORNER},
@@ -54,9 +58,14 @@ int main (int argc, char ** argv)
     
     calibrator.calibrate(input);
     
+    int prevTerminalWidth, prevTerminalHeight;
     int terminalWidth, terminalHeight;
     int fromX = 1, toX = world.WORLD_WIDTH, fromY = 1, toY = world.WORLD_LENGTH;
     bool smart = true;
+    bool activeDraw = false;
+    bool shiftedView = false;
+    int prevKeysPressed = 0;
+    int prevCursorX = 0, prevCursorY = 0;
     while (true)
     {
       input.update();
@@ -66,63 +75,77 @@ int main (int argc, char ** argv)
         break;
       }
       XWindowAttributes attr = input.get_window_attributes();
-      if (input.get_key_state(XK_Up))
+      if (!shiftedView)
       {
-        if ((input.get_key_state(XK_Shift_L) || input.get_key_state(XK_Shift_R)) && fromY < toY)
-        {
-          ++fromY;
-          smart = false;
-        }
-        else if (fromY > 1)
+        if (input.get_key_state(XK_Up) && fromY > 1)
         {
           --fromY;
-          smart = false;
-        }
-      }
-      if (input.get_key_state(XK_Down))
-      {
-        if ((input.get_key_state(XK_Shift_L) || input.get_key_state(XK_Shift_R)) && toY > fromY)
-        {
           --toY;
-          smart = false;
+          shiftedView = false;
         }
-        else if (toY < world.WORLD_LENGTH)
+        if (input.get_key_state(XK_Down) && toY < world.WORLD_LENGTH)
         {
+          ++fromY;
           ++toY;
-          smart = false;
+          shiftedView = false;
         }
-      }
-      if (input.get_key_state(XK_Left))
-      {
-        if ((input.get_key_state(XK_Shift_L) || input.get_key_state(XK_Shift_R)) && fromX < toX)
-        {
-          ++fromX;
-          smart = false;
-        }
-        else if (fromX > 1)
+        if (input.get_key_state(XK_Left) && fromX > 1)
         {
           --fromX;
-          smart = false;
-        }
-      }
-      if (input.get_key_state(XK_Right))
-      {
-        if ((input.get_key_state(XK_Shift_L) || input.get_key_state(XK_Shift_R)) && toX > fromX)
-        {
           --toX;
-          smart = false;
+          shiftedView = false;
         }
-        else if (toX < world.WORLD_WIDTH)
+        if (input.get_key_state(XK_Right) && toX < world.WORLD_WIDTH)
         {
+          ++fromX;
           ++toX;
+          shiftedView = false;
+        }
+        if (shiftedView)
+        {
           smart = false;
         }
       }
-      
+      if (terminalWidth >= world.WORLD_WIDTH && !smart)
+      {
+        fromX = 1;
+        toX = world.WORLD_WIDTH;
+        smart = false;
+      }
+      if (terminalHeight >= world.WORLD_LENGTH && !smart)
+      {
+        fromY = 1;
+        toY = world.WORLD_LENGTH;
+        smart = false;
+      }
+      if (toX - fromX > terminalWidth)
+      {
+        toX = fromX + terminalWidth - 1;
+        smart = false;
+        if (toX > world.WORLD_WIDTH)
+        {
+          toX = world.WORLD_WIDTH;
+          smart = false;
+        }
+      }
+      if (toY - fromY > terminalHeight)
+      {
+        toY = fromY + terminalHeight - 1;
+        smart = false;
+        if (toY > world.WORLD_LENGTH)
+        {
+          toY = world.WORLD_LENGTH;
+          smart = false;
+        }
+      }
       double mouseX = input.get_mouse_x_pos();
       double mouseY = input.get_mouse_y_pos();
       int x = calibrator.convert_x(mouseX) + fromX - 1;
       int y = calibrator.convert_y(mouseY) + fromY - 1;
+      if (prevCursorX != x || prevCursorY != y)
+      {
+        activeDraw = false;
+      }
 
       if (x <= world.WORLD_WIDTH && y <= world.WORLD_LENGTH && x >= 1 && y >= 1)
       {
@@ -157,7 +180,16 @@ int main (int argc, char ** argv)
               maxPressed = possible[i].second;
             }
           }
-          world.insert(x, y, material);
+          if (!activeDraw || maxPressed > prevKeysPressed)
+          {
+            world.insert(x, y, material);
+            activeDraw = true;
+            prevKeysPressed = maxPressed;
+          }
+        }
+        else
+        {
+          activeDraw = false;
         }
       }
       
@@ -165,10 +197,12 @@ int main (int argc, char ** argv)
       {
         cout << term::cursor_move_to(1, 1) << term::CLEAR << flush;
       }
-      toX = (toX > terminalWidth ? terminalWidth : toX);
-      toY = (toY > terminalHeight ? terminalHeight : toY);
       print.print(world, 1, 1, fromX, toX, fromY, toY, smart);
       smart = true;
+      prevCursorX = x;
+      prevCursorY = y;
+      prevTerminalWidth = terminalWidth;
+      prevTerminalHeight = terminalHeight;
     }
     input.flush_stdin_until(27);
   }
