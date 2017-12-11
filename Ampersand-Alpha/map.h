@@ -25,6 +25,11 @@
   const string rCEILING_CORNER = "╗";
   const string lFLOOR_CORNER = "╚";
   const string rFLOOR_CORNER = "╝";
+  const string THREE_WAY_UP = "╩";
+  const string THREE_WAY_DOWN = "╦";
+  const string THREE_WAY_LEFT = "╣";
+  const string THREE_WAY_RIGHT = "╠";
+  const string FOUR_WAY = "╬";
 
 bool is_solid (const string & block);
 
@@ -40,6 +45,10 @@ public:
   World(const string map_file); // Parameterized Constructor
 
   World(const World & rhs); // Copy Constructor
+
+  World(const unsigned int width, const unsigned int length, const string fill); // Parameterized Constructor
+
+  World & operator= (const World & rhs);
 
   ~World(); // Destructor
 

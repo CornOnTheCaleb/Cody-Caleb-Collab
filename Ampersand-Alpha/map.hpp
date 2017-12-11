@@ -103,6 +103,51 @@ World::World(const World & rhs)
 }
 
 /*
+=================================================================
+--------------------PARAMETERIZED CONSTRUCTOR--------------------
+================================================================= */
+World::World(const unsigned int width, const unsigned int length, const string fill)
+{
+  WORLD_LENGTH = length;
+  WORLD_WIDTH = width;
+  map = new string*[length + 1];
+  for(int i = 0; i <= length; i++)
+    map[i] = new string[width + 1];
+
+  for(int y = 1; y <= length; y++)
+  {
+    for(int x = 1; x <= width; x++)
+    {
+      map[y][x] = fill;
+    }
+  }
+}
+
+World & World::operator= (const World & rhs)
+{
+  if (this != &rhs)
+  {
+    if (map != NULL)
+    {
+      clear();
+    }
+    map = new string*[rhs.WORLD_LENGTH + 1];
+    for(int i = 0; i <= rhs.WORLD_LENGTH; i++)
+      map[i] = new string[rhs.WORLD_WIDTH + 1];
+    WORLD_LENGTH = rhs.WORLD_LENGTH;
+    WORLD_WIDTH = rhs.WORLD_WIDTH;
+    for(int y = 1; y <= WORLD_LENGTH; y++)
+    {
+      for(int x = 1; x <= WORLD_WIDTH; x++)
+      {
+        map[y][x] = rhs.map[y][x];
+      }
+    }
+  }
+  return (*this);
+}
+
+/*
 ==================================================
 --------------------DESTRUCTOR--------------------
 ================================================== */
@@ -179,8 +224,12 @@ void World::print(const unsigned int x, const unsigned int y)
 void World::clear()
 {
   for(int y = WORLD_LENGTH; y >= 0; y--)
+  {
     delete[] map[y];
+    map[y] = NULL;
+  }
   delete[] map;
+  map = NULL;
 }
 
 #endif

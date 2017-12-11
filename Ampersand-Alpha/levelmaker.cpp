@@ -1,24 +1,56 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "utility/terminalmanager.h"
 #include "utility/inputmanager.h"
-#include "utility/timemanager.h"
 #include "utility/printmanager.h"
 #include "utility/calibrationmanager.h"
 #include "map.h"
 
 using namespace std;
 
+vector< pair< vector< vector<int> >, string > > MATERIAL_KEY_COMBOS =
+{
+  {{{XK_w}, {XK_s}}, CEILING},
+  {{{XK_a}, {XK_d}}, WALL},
+  {{{XK_w, XK_a}}, lCEILING_CORNER},
+  {{{XK_w, XK_d}}, rCEILING_CORNER},
+  {{{XK_s, XK_a}}, lFLOOR_CORNER},
+  {{{XK_s, XK_d}}, rFLOOR_CORNER},
+};
+
 int main (int argc, char ** argv)
 {
+  World world;
+  string response;
+  cout << "Load world from file (y/n) ";
+  cin >> response;
+  if (response == "y" || response == "Y")
+  {
+    cout << "File: ";
+    cin >> response;
+    world = World(response);
+  }
+  else if (response == "n" || response == "N")
+  {
+    int width, length;
+    cout << "World dimension (width then length): ";
+    cin >> width >> length;
+
+    string fill;
+    cout << "Fill world with: ";
+    cin >> fill;
+
+    world = World(width, length, fill);
+  }
+
+  cout << term::alternate_terminal() << term::cursor_hide() << flush;
+
   CalibrationManager calibrator;
 
-  World world;
   {
     InputManager input;
-    TimeManager time;
     PrintManager print;
-    cout << term::alternate_terminal() << term::cursor_hide() << flush;
     
     calibrator.calibrate(input);
     
@@ -28,7 +60,6 @@ int main (int argc, char ** argv)
     while (true)
     {
       input.update();
-      time.update();
       term::get_dimensions(terminalWidth, terminalHeight);
       if (input.get_key_state(XK_Escape))
       {
@@ -95,41 +126,38 @@ int main (int argc, char ** argv)
 
       if (x <= world.WORLD_WIDTH && y <= world.WORLD_LENGTH && x >= 1 && y >= 1)
       {
-        if (input.get_key_state(XK_1))
+        vector< pair<string, int> > possible;
+        for (int i = 0; i < MATERIAL_KEY_COMBOS.size(); ++i)
         {
-          world.insert(x, y, GRASS);
+          for (int j = 0; j < MATERIAL_KEY_COMBOS[i].first.size(); ++j)
+          {
+            bool allPressed = true;
+            for (int k = 0; k < MATERIAL_KEY_COMBOS[i].first[j].size() && allPressed; ++k)
+            {
+              if (!input.get_key_state(MATERIAL_KEY_COMBOS[i].first[j][k]))
+              {
+                allPressed = false;
+              }
+            }
+            if (allPressed)
+            {
+              possible.push_back({MATERIAL_KEY_COMBOS[i].second, MATERIAL_KEY_COMBOS[i].first[j].size()});
+            }
+          }
         }
-        else if (input.get_key_state(XK_2))
+        if (possible.size() > 0)
         {
-          world.insert(x, y, AIR);
-        }
-        else if (input.get_key_state(XK_3))
-        {
-          world.insert(x, y, CLOUD);
-        }
-        else if (input.get_key_state(XK_4))
-        {
-          world.insert(x, y, WALL);
-        }
-        else if (input.get_key_state(XK_5))
-        {
-          world.insert(x, y, CEILING);
-        }
-        else if (input.get_key_state(XK_6))
-        {
-          world.insert(x, y, lCEILING_CORNER);
-        }
-        else if (input.get_key_state(XK_7))
-        {
-          world.insert(x, y, rCEILING_CORNER);
-        }
-        else if (input.get_key_state(XK_8))
-        {
-          world.insert(x, y, lFLOOR_CORNER);
-        }
-        else if (input.get_key_state(XK_9))
-        {
-          world.insert(x, y, rFLOOR_CORNER);
+          string material;
+          int maxPressed = 0;
+          for (int i = 0; i < possible.size(); ++i)
+          {
+            if (possible[i].second > maxPressed)
+            {
+              material = possible[i].first;
+              maxPressed = possible[i].second;
+            }
+          }
+          world.insert(x, y, material);
         }
       }
       
@@ -144,7 +172,6 @@ int main (int argc, char ** argv)
     }
     input.flush_stdin_until(27);
   }
-  string response;
   cout << term::cursor_move_to(1, 1) << term::CLEAR << term::cursor_show() << "Save? (y/n): " << flush;
   cin >> response;
   if (response.find("y") != string::npos || response.find("Y") != string::npos)
