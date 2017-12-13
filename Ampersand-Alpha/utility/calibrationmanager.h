@@ -31,6 +31,7 @@ class CalibrationManager
 
     void calibrate (InputManager & input, const int trials = 1)
     {
+      int prevTerminalWidth, prevTerminalHeight;
       int terminalWidth, terminalHeight;
       term::get_dimensions(terminalWidth, terminalHeight);
       
@@ -44,7 +45,6 @@ class CalibrationManager
         for (int i = 0; i < points.size() && !end; ++i)
         {
           bool done = false;
-          cout << term::cursor_move_to(points[i].termY, points[i].termX) << term::background_color(0, 255, 0) << "I" << term::RESET << flush;
           while (!done && !end)
           {
             input.update();
@@ -53,6 +53,11 @@ class CalibrationManager
             points[2].termX = terminalWidth;
             points[3].termX = terminalWidth;
             points[3].termY = terminalHeight;
+            if (terminalWidth != prevTerminalWidth || terminalHeight != prevTerminalHeight)
+            {
+              cout << term::cursor_move_to(1, 1) << term::CLEAR << flush;
+            }
+            cout << term::cursor_move_to(points[i].termY, points[i].termX) << term::background_color(0, 255, 0) << "I" << term::RESET << flush;
             if (input.get_key_state(XK_Escape))
             {
               end = true;
@@ -67,6 +72,8 @@ class CalibrationManager
                 input.update();
               }
             }
+            prevTerminalWidth = terminalWidth;
+            prevTerminalHeight = terminalHeight;
           }
           cout << term::cursor_move_to(1, 1) << term::CLEAR << flush;
         }

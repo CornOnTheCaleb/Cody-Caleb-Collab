@@ -21,17 +21,20 @@ class PrintManager
       {
         for (int x = fromX; x <= toX; ++x)
         {
-          if (m_hasPrinted && smart)
+          if (world.map[y][x] != "\0")
           {
-            if (world.map[y][x] != m_previous.map[y][x])
+            if (m_hasPrinted && smart)
             {
-              cout << term::cursor_move_to(line + (y - fromY), column + (x - fromX)) << world.map[y][x];
+              if (world.map[y][x] != m_previous.map[y][x])
+              {
+                cout << term::cursor_move_to(line + (y - fromY), column + (x - fromX)) << world.map[y][x];
+              }
             }
-          }
-          else
-          {
-            string temp = world.map[y][x];
-            cout << term::cursor_move_to(line + (y - fromY), column + (x - fromX)) << temp;
+            else
+            {
+              string temp = world.map[y][x];
+              cout << term::cursor_move_to(line + (y - fromY), column + (x - fromX)) << temp;
+            }
           }
           m_previous.map[y][x] = world.map[y][x];
         }

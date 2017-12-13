@@ -23,6 +23,27 @@ vector< pair< vector< vector<int> >, string > > MATERIAL_KEY_COMBOS =
   {{{XK_s, XK_d}}, rFLOOR_CORNER},
 };
 
+void flood_fill (World & world, const int x, const int y, const string fromMaterial, const string toMaterial)
+{
+  if (fromMaterial != toMaterial)
+  {
+    const int DIRECTIONS[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    world.insert(x, y, toMaterial);
+    for (int direction = 0; direction < 4; ++direction)
+    {
+      int newX = x + DIRECTIONS[direction][0];
+      int newY = y + DIRECTIONS[direction][1];
+      if (newX >= 1 && newX <= world.WORLD_WIDTH && newY >= 1 && newY <= world.WORLD_LENGTH)
+      {
+        if (world.map[newY][newX] == fromMaterial)
+        {
+          flood_fill(world, newX, newY, fromMaterial, toMaterial);
+        }
+      }
+    }
+  }
+}
+
 int main (int argc, char ** argv)
 {
   World world;
@@ -66,130 +87,167 @@ int main (int argc, char ** argv)
     bool shiftedView = false;
     int prevKeysPressed = 0;
     int prevCursorX = 0, prevCursorY = 0;
-    while (true)
+    bool end = false;
+    string selectedMaterial = AIR;
+    while (!end)
     {
       input.update();
       term::get_dimensions(terminalWidth, terminalHeight);
       if (input.get_key_state(XK_Escape))
       {
-        break;
+        end = true;
       }
       XWindowAttributes attr = input.get_window_attributes();
       if (!shiftedView)
       {
-        if (input.get_key_state(XK_Up) && fromY > 1)
+        int shiftX = terminalWidth / 8;
+        int shiftY = terminalHeight / 8;
+        if (input.get_key_state(XK_Up))
         {
-          --fromY;
-          --toY;
-          shiftedView = false;
+          shiftY = (fromY > shiftY ? shiftY : fromY - 1);
+          fromY -= shiftY;
+          toY -= shiftY;
+          shiftedView = true;
         }
-        if (input.get_key_state(XK_Down) && toY < world.WORLD_LENGTH)
+        if (input.get_key_state(XK_Down))
         {
-          ++fromY;
-          ++toY;
-          shiftedView = false;
+          shiftY = (toY < world.WORLD_LENGTH - shiftY ? shiftY : world.WORLD_LENGTH - toY);
+          fromY += shiftY;
+          toY += shiftY;
+          shiftedView = true;
         }
-        if (input.get_key_state(XK_Left) && fromX > 1)
+        if (input.get_key_state(XK_Left))
         {
-          --fromX;
-          --toX;
-          shiftedView = false;
+          shiftX = (fromX > shiftX ? shiftX : fromX - 1);
+          fromX -= shiftX;
+          toX -= shiftX;
+          shiftedView = true;
         }
-        if (input.get_key_state(XK_Right) && toX < world.WORLD_WIDTH)
+        if (input.get_key_state(XK_Right))
         {
-          ++fromX;
-          ++toX;
-          shiftedView = false;
+          shiftX = (toX < world.WORLD_WIDTH - shiftX ? shiftX : world.WORLD_WIDTH - toX);
+          fromX += shiftX;
+          toX += shiftX;
+          shiftedView = true;
         }
         if (shiftedView)
         {
           smart = false;
         }
       }
-      if (terminalWidth >= world.WORLD_WIDTH && terminalWidth != prevTerminalWidth)
+      if (!(input.get_key_state(XK_Up) || input.get_key_state(XK_Down) || input.get_key_state(XK_Left) || input.get_key_state(XK_Right)))
       {
-        fromX = 1;
-        toX = world.WORLD_WIDTH;
-        smart = false;
+        shiftedView = false;
       }
-      if (terminalHeight >= world.WORLD_LENGTH && terminalHeight != prevTerminalHeight)
+      if (terminalWidth != prevTerminalWidth)
       {
-        fromY = 1;
-        toY = world.WORLD_LENGTH;
-        smart = false;
-      }
-      if (toX - fromX > terminalWidth)
-      {
+        if (terminalWidth >= world.WORLD_WIDTH)
+        {
+          fromX = 1;
+          toX = world.WORLD_WIDTH;
+        }
         toX = fromX + terminalWidth - 1;
         smart = false;
         if (toX > world.WORLD_WIDTH)
         {
           toX = world.WORLD_WIDTH;
-          smart = false;
+          if (toX - fromX < terminalWidth)
+          {
+            fromX = toX - terminalWidth + 1;
+            if (fromX < 1)
+            {
+              fromX = 1;
+            }
+          }
         }
       }
-      if (toY - fromY > terminalHeight)
+      if (terminalHeight != prevTerminalHeight)
       {
+        if (terminalHeight >= world.WORLD_LENGTH)
+        {
+          fromY = 1;
+          toY = world.WORLD_LENGTH;
+        }
         toY = fromY + terminalHeight - 1;
         smart = false;
         if (toY > world.WORLD_LENGTH)
         {
           toY = world.WORLD_LENGTH;
-          smart = false;
+          if (toY - fromY < terminalHeight)
+          {
+            fromY  = toY - terminalHeight + 1;
+            if (fromY < 1)
+            {
+              fromY = 1;
+            }
+          }
         }
       }
       double mouseX = input.get_mouse_x_pos();
       double mouseY = input.get_mouse_y_pos();
       int x = calibrator.convert_x(mouseX) + fromX - 1;
       int y = calibrator.convert_y(mouseY) + fromY - 1;
+      x = (x < 1 ? 1 : (x > world.WORLD_WIDTH ? world.WORLD_WIDTH : x));
+      y = (y < 1 ? 1 : (y > world.WORLD_LENGTH ? world.WORLD_LENGTH : y));
       if (prevCursorX != x || prevCursorY != y)
       {
         activeDraw = false;
       }
-
-      if (x <= world.WORLD_WIDTH && y <= world.WORLD_LENGTH && x >= 1 && y >= 1)
+      
+      vector< pair<string, int> > possible;
+      for (int i = 0; i < MATERIAL_KEY_COMBOS.size(); ++i)
       {
-        vector< pair<string, int> > possible;
-        for (int i = 0; i < MATERIAL_KEY_COMBOS.size(); ++i)
+        for (int j = 0; j < MATERIAL_KEY_COMBOS[i].first.size(); ++j)
         {
-          for (int j = 0; j < MATERIAL_KEY_COMBOS[i].first.size(); ++j)
+          bool allPressed = true;
+          for (int k = 0; k < MATERIAL_KEY_COMBOS[i].first[j].size() && allPressed; ++k)
           {
-            bool allPressed = true;
-            for (int k = 0; k < MATERIAL_KEY_COMBOS[i].first[j].size() && allPressed; ++k)
+            if (!input.get_key_state(MATERIAL_KEY_COMBOS[i].first[j][k]))
             {
-              if (!input.get_key_state(MATERIAL_KEY_COMBOS[i].first[j][k]))
-              {
-                allPressed = false;
-              }
+              allPressed = false;
             }
-            if (allPressed)
-            {
-              possible.push_back({MATERIAL_KEY_COMBOS[i].second, MATERIAL_KEY_COMBOS[i].first[j].size()});
-            }
+          }
+          if (allPressed)
+          {
+            possible.push_back({MATERIAL_KEY_COMBOS[i].second, MATERIAL_KEY_COMBOS[i].first[j].size()});
           }
         }
-        if (possible.size() > 0)
+      }
+      if (possible.size() > 0)
+      {
+        string material;
+        int maxPressed = 0;
+        for (int i = 0; i < possible.size(); ++i)
         {
-          string material;
-          int maxPressed = 0;
-          for (int i = 0; i < possible.size(); ++i)
+          if (possible[i].second > maxPressed)
           {
-            if (possible[i].second > maxPressed)
-            {
-              material = possible[i].first;
-              maxPressed = possible[i].second;
-            }
-          }
-          if (!activeDraw || maxPressed > prevKeysPressed)
-          {
-            world.insert(x, y, material);
-            activeDraw = true;
-            prevKeysPressed = maxPressed;
+            material = possible[i].first;
+            maxPressed = possible[i].second;
           }
         }
-        else
+        if (!activeDraw || maxPressed > prevKeysPressed)
         {
-          activeDraw = false;
+          selectedMaterial = material;
+          activeDraw = true;
+          prevKeysPressed = maxPressed;
+        }
+      }
+      else
+      {
+        activeDraw = false;
+      }
+
+      if (x <= world.WORLD_WIDTH && y <= world.WORLD_LENGTH && x >= 1 && y >= 1 && input.get_key_state(XK_b))
+      {
+        world.insert(x, y, selectedMaterial);
+      }
+
+      if (input.get_key_state(XK_f))
+      {
+        flood_fill(world, x, y, world.map[y][x], selectedMaterial);
+        while (input.get_key_state(XK_f))
+        {
+          input.update();
         }
       }
       
