@@ -7,6 +7,7 @@
 #include "utility/timemanager.h"
 #include "utility/printmanager.h"
 #include "utility/calibrationmanager.h"
+#include "utility/miscellaneous.h"
 #include "map.h"
 
 using namespace std;
@@ -49,17 +50,18 @@ struct MakerEngine
   MakerEngine (World & world) : flat(world), backupLayers({world}), layers({world}), selectedLayer(0), selectedMaterial(0), prevSelectedMaterial(0), terminalWidth(0), terminalHeight(0), prevTerminalWidth(0), prevTerminalHeight(0), printWorldFromX(1), printWorldToX(world.WORLD_WIDTH), printWorldFromY(1), printWorldToY(world.WORLD_LENGTH), smartPrint(false), terminate(false), viewportFromX(0), viewportToX(0), viewportFromY(0), viewportToY(0), clipboard(World(world.WORLD_WIDTH, world.WORLD_LENGTH, "\0")), shift(false)
   {
     materials = {
-      AIR, GRASS, CLOUD, WALL, CEILING, lCEILING_CORNER, rCEILING_CORNER, lFLOOR_CORNER, rFLOOR_CORNER, "\0"
+      AIR, GRASS, VEGETATION, CLOUD, WALL, CEILING, lCEILING_CORNER, rCEILING_CORNER, lFLOOR_CORNER, rFLOOR_CORNER, "\0"
     };
   }
 };
 
+void update (MakerEngine & engine);
+void print (MakerEngine & engine);
+
 void get_mouse_terminal_coordinates (MakerEngine & engine, int & terminalX, int & terminalY)
 {
-  terminalX = engine.calibrationManager.convert_x(engine.inputManager.get_mouse_x_pos());
-  terminalY = engine.calibrationManager.convert_y(engine.inputManager.get_mouse_y_pos());
-  terminalX = (terminalX < 1 ? 1 : (terminalX > engine.terminalWidth ? engine.terminalWidth : terminalX));
-  terminalY = (terminalY < 1 ? 1 : (terminalY > engine.terminalHeight ? engine.terminalHeight : terminalY));
+  terminalX = clamp(engine.calibrationManager.convert_x(engine.inputManager.get_mouse_x_pos()), 1, engine.terminalWidth);
+  terminalY = clamp(engine.calibrationManager.convert_y(engine.inputManager.get_mouse_y_pos()), 1, engine.terminalHeight);
 }
 
 void get_mouse_world_coordinates (MakerEngine & engine, int & worldX, int & worldY)
@@ -67,8 +69,23 @@ void get_mouse_world_coordinates (MakerEngine & engine, int & worldX, int & worl
   get_mouse_terminal_coordinates(engine, worldX, worldY);
   worldX += engine.printWorldFromX - engine.viewportFromX;
   worldY += engine.printWorldFromY - engine.viewportFromY;
-  worldX = (worldX < 1 ? 1 : (worldX > engine.layers[engine.selectedLayer].WORLD_WIDTH ? engine.layers[engine.selectedLayer].WORLD_WIDTH : worldX));
-  worldY = (worldY < 1 ? 1 : (worldY > engine.layers[engine.selectedLayer].WORLD_LENGTH ? engine.layers[engine.selectedLayer].WORLD_LENGTH : worldY));
+  worldX = clamp(worldX, engine.printWorldFromX, engine.printWorldToX);
+  worldY = clamp(worldY, engine.printWorldFromY, engine.printWorldToY);
+}
+
+void get_prev_mouse_terminal_coordinates (MakerEngine & engine, int & terminalX, int & terminalY)
+{
+  terminalX = clamp(engine.calibrationManager.convert_x(engine.inputManager.get_prev_mouse_x_pos()), 1, engine.terminalWidth);
+  terminalY = clamp(engine.calibrationManager.convert_y(engine.inputManager.get_prev_mouse_y_pos()), 1, engine.terminalHeight);
+}
+
+void get_prev_mouse_world_coordinates (MakerEngine & engine, int & worldX, int & worldY)
+{
+  get_prev_mouse_terminal_coordinates(engine, worldX, worldY);
+  worldX += engine.printWorldFromX - engine.viewportFromX;
+  worldY += engine.printWorldFromY - engine.viewportFromY;
+  worldX = clamp(worldX, engine.printWorldFromX, engine.printWorldToX);
+  worldY = clamp(worldY, engine.printWorldFromY, engine.printWorldToY);
 }
 
 void undo_draw (MakerEngine & engine, vector<void*> params)
@@ -145,7 +162,8 @@ void rectangle_fill (MakerEngine & engine, vector<void*> params)
   int x2, y2;
   while (!engine.inputManager.get_mouse_left_button())
   {
-    engine.inputManager.update();
+    update(engine);
+    print(engine);
     get_mouse_world_coordinates(engine, x1, y1);
   }
   while (engine.inputManager.get_mouse_left_button())
@@ -154,7 +172,8 @@ void rectangle_fill (MakerEngine & engine, vector<void*> params)
   }
   while (!engine.inputManager.get_mouse_left_button())
   {
-    engine.inputManager.update();
+    update(engine);
+    print(engine);
     get_mouse_world_coordinates(engine, x2, y2);
   }
   while (engine.inputManager.get_mouse_left_button())
@@ -196,7 +215,8 @@ void line_fill (MakerEngine & engine, vector<void*> params)
   int x2, y2;
   while (!engine.inputManager.get_mouse_left_button())
   {
-    engine.inputManager.update();
+    update(engine);
+    print(engine);
     get_mouse_world_coordinates(engine, x1, y1);
   }
   while (engine.inputManager.get_mouse_left_button())
@@ -205,7 +225,8 @@ void line_fill (MakerEngine & engine, vector<void*> params)
   }
   while (!engine.inputManager.get_mouse_left_button())
   {
-    engine.inputManager.update();
+    update(engine);
+    print(engine);
     get_mouse_world_coordinates(engine, x2, y2);
   }
   while (engine.inputManager.get_mouse_left_button())
@@ -219,7 +240,7 @@ void line_fill (MakerEngine & engine, vector<void*> params)
   {
     int y = m * x + b;
     engine.layers[engine.selectedLayer].insert((int)x, y, engine.materials[engine.selectedMaterial]);
-    if (x <= x2 && x1 < x2)
+    if (x <= x2 + changeX && x1 < x2)
     {
       x += changeX;
     }
@@ -227,7 +248,8 @@ void line_fill (MakerEngine & engine, vector<void*> params)
     {
       x -= changeX;
     }
-  } while ((x1 < x2 && x <= x2) || (x1 > x2 && x >= x2));
+  } while ((x1 < x2 && x <= x2 + changeX) || (x1 > x2 && x >= x2));
+  engine.layers[engine.selectedLayer].insert(x2, y2, engine.materials[engine.selectedMaterial]);
 }
 
 void rotate_material (MakerEngine & engine, vector<void*> params)
@@ -330,7 +352,7 @@ void update (MakerEngine & engine)
   engine.viewportFromX = 2;
   engine.viewportToX = engine.terminalWidth - 1;
   engine.viewportFromY = 2;
-  engine.viewportToY = engine.terminalHeight - 1;
+  engine.viewportToY = engine.terminalHeight - 2;
   if (engine.terminalWidth != engine.prevTerminalWidth)
   {
     engine.smartPrint = false;
@@ -440,7 +462,7 @@ void print (MakerEngine & engine)
     }
   }
   engine.printManager.print(engine.flat, engine.viewportFromX, engine.viewportFromY, engine.printWorldFromX, engine.printWorldToX, engine.printWorldFromY, engine.printWorldToY, engine.smartPrint);
-  if (!engine.smartPrint || engine.selectedMaterial != engine.prevSelectedMaterial)
+  if (!engine.smartPrint || engine.selectedMaterial != engine.prevSelectedMaterial)  
   {
     string border = (engine.materials[engine.selectedMaterial] != "\0" ? engine.materials[engine.selectedMaterial] : " ");
     for (int x = engine.viewportFromX - 1; x <= engine.viewportToX + 1; ++x)
@@ -454,6 +476,24 @@ void print (MakerEngine & engine)
       cout << term::cursor_move_to(y, engine.viewportToX + 1) << border << term::RESET << flush;
     }
     engine.smartPrint = true;
+  }
+  int worldX, worldY;
+  get_mouse_world_coordinates(engine, worldX, worldY);
+  int prevWorldX, prevWorldY;
+  get_prev_mouse_world_coordinates(engine, prevWorldX, prevWorldY);
+  int termX, termY;
+  get_mouse_terminal_coordinates(engine, termX, termY);
+  termX = clamp(termX, engine.viewportFromX, clamp(engine.viewportToX, 1, engine.layers[engine.selectedLayer].WORLD_WIDTH + engine.viewportFromX - 1));
+  termY = clamp(termY, engine.viewportFromY, clamp(engine.viewportToY, 1, engine.layers[engine.selectedLayer].WORLD_LENGTH + engine.viewportFromY - 1));
+  int prevTermX, prevTermY;
+  get_prev_mouse_terminal_coordinates(engine, prevTermX, prevTermY);
+  prevTermX = clamp(prevTermX, engine.viewportFromX, clamp(engine.viewportToX, 1, engine.layers[engine.selectedLayer].WORLD_WIDTH + engine.viewportFromX));
+  prevTermY = clamp(prevTermY, engine.viewportFromY, clamp(engine.viewportToY, 1, engine.layers[engine.selectedLayer].WORLD_LENGTH + engine.viewportFromY));
+  if (worldX != prevWorldX || worldY != prevWorldY || engine.smartPrint)
+  {
+    cout << term::cursor_move_to(engine.terminalHeight, 2) << "World Coordinates: (" << worldX << ", " << worldY << ")" << flush;
+    cout << term::cursor_move_to(prevTermY, prevTermX) << engine.layers[engine.selectedLayer].map[prevWorldY][prevWorldX] << flush;
+    cout << term::cursor_move_to(termY, termX) << term::foreground_color(0, 0, 0) << term::background_color(127, 127, 127) << "+" << term::RESET << flush;
   }
 }
 

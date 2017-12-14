@@ -35,6 +35,8 @@ class InputManager
     INPUT_STATUS m_rightMouseButtonStatus;
     int m_mouseXPos;
     int m_mouseYPos;
+    int m_prevMouseXPos;
+    int m_prevMouseYPos;
     unsigned int m_mouseButtonMask;
   private:
     void set_block_state (const bool state)
@@ -119,6 +121,8 @@ class InputManager
 
     void update ()
     {
+      m_prevMouseXPos = m_mouseXPos;
+      m_prevMouseYPos = m_mouseYPos;
       Window tmpWindow;
       int tmpInt;
       XQueryKeymap(m_display, m_keyboard);
@@ -184,6 +188,16 @@ class InputManager
     int get_mouse_y_pos () const
     {
       return m_mouseYPos;
+    }
+
+    int get_prev_mouse_x_pos () const
+    {
+      return m_prevMouseXPos;
+    }
+
+    int get_prev_mouse_y_pos () const
+    {
+      return m_prevMouseYPos;
     }
 
     XWindowAttributes get_window_attributes () const

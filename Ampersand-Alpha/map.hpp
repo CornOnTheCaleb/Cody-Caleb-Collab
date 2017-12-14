@@ -7,7 +7,7 @@
 ================================================*/
 bool is_solid (const string & block)
 {
-  return (block != AIR && block != CLOUD);
+  return (block != AIR && block != CLOUD && block != VEGETATION);
 }
 
 /*

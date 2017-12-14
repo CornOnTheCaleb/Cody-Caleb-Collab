@@ -19,6 +19,7 @@
   const string CLOUD = term::foreground_color(255, 255, 255) + term::background_color(255, 255, 255) + "▓" + term::RESET;
   const string BLOCK = "▓";
   const string GRASS = term::foreground_color(22, 63, 6) + term::background_color(22, 63, 6) + "▓" + term::RESET;
+  const string VEGETATION = term::foreground_color(34, 139, 34) + term::background_color(34, 139, 34) + "▓" + term::RESET;
   const string WALL = "║";
   const string CEILING = "═";
   const string lCEILING_CORNER = "╔";

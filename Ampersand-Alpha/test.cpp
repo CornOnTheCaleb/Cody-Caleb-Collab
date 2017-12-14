@@ -1,7 +1,6 @@
-//#include "character.h"
-
 #define DEBUG
 
+#include "character.h"
 #include "enemy.h"
 #include "utility/inputmanager.h"
 #include "utility/timemanager.h"
@@ -17,7 +16,7 @@ void print_debug (World & world, Character * c, const string header, const int l
   cout << term::cursor_move_to(line + 2, column) << "~ current position: (" << (int)c->x_coord << ", " << (int)c->y_coord << ")\t(" << c->x_coord << ", " << c->y_coord << ")" << string(10, ' ') << flush;
   cout << term::cursor_move_to(line + 3, column) << "~ velocity: (" << c->x_velocity << ", " << c->y_velocity << ")" << string(10, ' ') << flush;
   cout << term::cursor_move_to(line + 4, column) << "~ surroundings: above [" << world.map[(int)c->y_coord - 1][(int)c->x_coord] << "] below [" << world.map[(int)c->y_coord + 1][(int)c->x_coord] << "] left [" << world.map[(int)c->y_coord][(int)c->x_coord - 1] << "] right [" << world.map[(int)c->y_coord][(int)c->x_coord + 1] << "]" << string(10, ' ') << flush;
-  cout << term::cursor_move_to(line + 5, column) << "~ covered: [" << c->covered << "]" << string(10, ' ') << flush;
+:x  cout << term::cursor_move_to(line + 5, column) << "~ covered: [" << c->covered << "]" << string(10, ' ') << flush;
   cout << term::cursor_move_to(line + 6, column) << "~ jumped: " << (c->jumped ? "TRUE" : "FALSE") << string(10, ' ') << flush;
 }
 #endif
