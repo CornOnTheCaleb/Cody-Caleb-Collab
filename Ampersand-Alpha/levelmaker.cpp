@@ -487,8 +487,8 @@ void print (MakerEngine & engine)
   termY = clamp(termY, engine.viewportFromY, clamp(engine.viewportToY, 1, engine.layers[engine.selectedLayer].WORLD_LENGTH + engine.viewportFromY - 1));
   int prevTermX, prevTermY;
   get_prev_mouse_terminal_coordinates(engine, prevTermX, prevTermY);
-  prevTermX = clamp(prevTermX, engine.viewportFromX, clamp(engine.viewportToX, 1, engine.layers[engine.selectedLayer].WORLD_WIDTH + engine.viewportFromX));
-  prevTermY = clamp(prevTermY, engine.viewportFromY, clamp(engine.viewportToY, 1, engine.layers[engine.selectedLayer].WORLD_LENGTH + engine.viewportFromY));
+  prevTermX = clamp(prevTermX, engine.viewportFromX, clamp(engine.viewportToX, 1, engine.layers[engine.selectedLayer].WORLD_WIDTH + engine.viewportFromX - 1));
+  prevTermY = clamp(prevTermY, engine.viewportFromY, clamp(engine.viewportToY, 1, engine.layers[engine.selectedLayer].WORLD_LENGTH + engine.viewportFromY - 1));
   if (worldX != prevWorldX || worldY != prevWorldY || engine.smartPrint)
   {
     cout << term::cursor_move_to(engine.terminalHeight, 2) << "World Coordinates: (" << worldX << ", " << worldY << ")" << flush;
