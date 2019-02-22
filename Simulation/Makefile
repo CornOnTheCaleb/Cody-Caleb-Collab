@@ -18,8 +18,8 @@ program: ${OBJECTS}
 	${CXX} ${CXXFLAGS} ${OBJECTS} -o $@
 
 clean:
-	-@del program.exe
-	-@del ${OBJECTS}
+	-@rm -f program
+	-@rm -f ${OBJECTS}
 
 # Dependency lists
 actor.o: actor.cpp
