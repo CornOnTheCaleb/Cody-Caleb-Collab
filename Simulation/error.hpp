@@ -1,10 +1,3 @@
-/*
-Programmer: Caleb Berg
-Course: 5400 SP2019
-File: error.hpp
-Date: 02/17/19
-*/
-
 #ifndef ERROR_H
 #define ERROR_H
 
@@ -14,9 +7,7 @@ using namespace std;
 
 enum ErrorEnum
 {
-    FILE_OPEN_ERROR,
-    PARSE_ERROR,
-    COMMAND_LINE_ERROR
+    MISCELLANEOUS_ERROR
 };
 
 template< ErrorEnum E >
