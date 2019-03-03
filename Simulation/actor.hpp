@@ -3,13 +3,23 @@
 
 #include "position.hpp"
 
+class Environment;
+
+class ActorAttributes
+{
+    public:
+        Position position;
+};
+
 class Actor
 {
-    private:
-        Position position;
+    protected:
+        Environment * environment;
+        ActorAttributes * attributes;
     
     public:
         Actor();
+        Actor( const ActorAttributes * attributes );
         Actor( const Actor & source );
         Actor & operator=( const Actor & source );
 };

@@ -2,13 +2,17 @@
 #define ENVIRONMENT_HPP
 
 #include <vector>
-#include "actor.hpp"
+#include <string>
 #include "position.hpp"
+
+class Actor;
 
 class Environment
 {
-    private:
+    protected:
         std::vector< Actor* > actors;
+        unsigned long long time;
+        std::vector< std::vector < std::string > > grid;
     
     public:
         Environment();
